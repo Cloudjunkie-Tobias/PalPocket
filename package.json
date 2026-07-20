@@ -1,0 +1,49 @@
+{
+  "name": "palpocket",
+  "version": "1.1.0",
+  "description": "Palworld worker-pal overlay: which pals to get by level + base planner",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win",
+    "dist:portable": "electron-builder --win portable"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.tobias.palpocket",
+    "productName": "PalPocket",
+    "icon": "build/icon.ico",
+    "files": [
+      "main.js",
+      "preload.js",
+      "src/**/*"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    },
+    "portable": {
+      "artifactName": "PalPocket-portable.exe"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "PalPocket",
+      "artifactName": "PalPocket-Setup-${version}.exe",
+      "uninstallDisplayName": "PalPocket ${version}"
+    }
+  },
+  "allowScripts": {
+    "electron@31.7.7": true
+  }
+}

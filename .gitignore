@@ -1,0 +1,11 @@
+# dependencies
+node_modules/
+
+# build output (binaries are released, not committed)
+dist/
+
+# OS / editor noise
+Thumbs.db
+Desktop.ini
+.DS_Store
+*.log
