@@ -1,6 +1,10 @@
 const { app, BrowserWindow, globalShortcut, ipcMain, screen, shell } = require('electron');
 const path = require('path');
 
+// Auto-update via GitHub Releases (installed builds only; the portable exe can't self-update).
+let autoUpdater = null;
+try { autoUpdater = require('electron-updater').autoUpdater; } catch (e) { /* dev without dep */ }
+
 let win = null;
 let clickThrough = false;
 
@@ -75,6 +79,20 @@ app.whenReady().then(() => {
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
+  });
+
+  // Check GitHub Releases for updates (skip in dev and in the portable build).
+  if (autoUpdater && app.isPackaged && !process.env.PORTABLE_EXECUTABLE_DIR) {
+    autoUpdater.autoDownload = true;
+    autoUpdater.autoInstallOnAppQuit = true; // installs silently when the app closes
+    autoUpdater.on('update-downloaded', (info) => {
+      if (win) win.webContents.send('update-ready', info.version);
+    });
+    autoUpdater.on('error', () => { /* offline / rate-limit — stay quiet */ });
+    autoUpdater.checkForUpdates().catch(() => {});
+  }
+  ipcMain.on('install-update', () => {
+    if (autoUpdater) autoUpdater.quitAndInstall();
   });
 });
 

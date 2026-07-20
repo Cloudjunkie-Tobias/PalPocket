@@ -4,8 +4,9 @@ const DATA = window.PAL_DATA || { pals: [], baseCapacity: {}, suitabilityLadders
 const hasOverlay = typeof window.overlay !== "undefined";
 
 // Bump APP_VERSION with each release (keep in sync with package.json) and add its notes here.
-const APP_VERSION = "1.3.0";
+const APP_VERSION = "1.4.0";
 const RELEASE_NOTES = {
+  "1.4.0": ["⬆ Auto-update: the installed app now updates itself from GitHub", "A green update pill appears in the title bar when a new version is ready"],
   "1.3.0": ["✨ 'What's New' popup — see updates right after installing", "ℹ️ Version + What's-New link on the Bases tab"],
   "1.2.0": ["🕒 Live local-time clock in the title bar"],
   "1.1.0": ["Refreshed every pal's notes & locations to current 1.0/Feybreak data"],
@@ -964,6 +965,17 @@ function init() {
     $("min").addEventListener("click", () => window.overlay.minimize());
     $("close").addEventListener("click", () => window.overlay.close());
     window.overlay.onClickThroughChanged(v => { ct = v; $("click-through").classList.toggle("active", v); });
+    if (window.overlay.onUpdateReady) {
+      window.overlay.onUpdateReady(version => {
+        if ($("update-pill")) return;
+        const pill = el("button", "update-pill", "⬆ v" + esc(version));
+        pill.id = "update-pill";
+        pill.title = "Update v" + version + " downloaded — click to restart and install (or it installs when you close the app)";
+        pill.addEventListener("click", () => window.overlay.installUpdate());
+        const bar = document.querySelector("#titlebar .tb-drag");
+        if (bar) bar.appendChild(pill);
+      });
+    }
     if (window.overlay.getStartup) {
       window.overlay.getStartup().then(v => { $("startup").checked = !!v; });
       $("startup").addEventListener("change", e => window.overlay.setStartup(e.target.checked));
