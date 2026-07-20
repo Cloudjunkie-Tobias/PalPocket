@@ -4,9 +4,11 @@ A compact, always-on-top **Palworld companion** for Windows: worker planning, mo
 
 ![Electron](https://img.shields.io/badge/Electron-31-blue) ![Platform](https://img.shields.io/badge/platform-Windows%20x64-informational) ![License](https://img.shields.io/badge/license-MIT-green)
 
-## Install (players)
+## ⬇️ Download / Install (players)
 
-Grab **`PalPocket-Setup-<version>.exe`** and run it — normal setup wizard, per-user (no admin), creates Desktop/Start Menu shortcuts and an uninstaller. There's also **`PalPocket-portable.exe`** if you prefer no install.
+**→ [Get the latest release](https://github.com/Cloudjunkie-Tobias/PalPocket/releases/latest)** — under **Assets**, download **`PalPocket-Setup-<version>.exe`** and run it.
+
+It's a normal setup wizard: per-user (no admin), creates Desktop/Start Menu shortcuts and an uninstaller. Prefer no install? Grab **`PalPocket-portable.exe`** instead. Once installed, the app **updates itself** automatically from future releases.
 
 > ⚠️ The binaries are unsigned, so Windows SmartScreen will warn on first run. Click **More info → Run anyway**.
 
