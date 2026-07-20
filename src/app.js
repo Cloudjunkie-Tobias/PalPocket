@@ -870,6 +870,15 @@ function setLevel(v) {
   if ($("tab-base").classList.contains("active")) renderBaseTypeDetail();
 }
 
+// Live clock — the Windows device's local time.
+function startClock() {
+  const elc = $("clock");
+  if (!elc) return;
+  const tick = () => { elc.textContent = "🕒 " + new Date().toLocaleTimeString(); };
+  tick();
+  setInterval(tick, 1000);
+}
+
 function init() {
   if (DATA._seed) $("seed-flag").classList.remove("hidden"); else $("seed-flag").classList.add("hidden");
 
@@ -890,6 +899,7 @@ function init() {
   $("search").addEventListener("blur", () => setTimeout(() => { const b = $("search-results"); if (b) b.classList.add("hidden"); }, 150));
   document.addEventListener("keydown", e => { if (e.key === "Escape") { closePalModal(); const b = $("search-results"); if (b) b.classList.add("hidden"); } });
 
+  startClock();
   loadBaseSlots();
   renderSuitPicker();
   fillBylevelFilter();
