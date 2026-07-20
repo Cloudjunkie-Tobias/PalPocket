@@ -64,6 +64,7 @@ app.whenReady().then(() => {
     clickThrough = !!value;
     win.setIgnoreMouseEvents(clickThrough, { forward: true });
   });
+  ipcMain.handle('get-version', () => app.getVersion());
   ipcMain.handle('get-startup', () => app.getLoginItemSettings().openAtLogin);
   ipcMain.on('set-startup', (_e, value) => {
     app.setLoginItemSettings({ openAtLogin: !!value });

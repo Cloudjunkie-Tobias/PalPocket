@@ -3,19 +3,16 @@
 const DATA = window.PAL_DATA || { pals: [], baseCapacity: {}, suitabilityLadders: {} };
 const hasOverlay = typeof window.overlay !== "undefined";
 
-// Bump APP_VERSION with each release (keep in sync with package.json) and add its notes here.
-const APP_VERSION = "1.4.0";
-const RELEASE_NOTES = {
-  "1.4.0": ["⬆ Auto-update: the installed app now updates itself from GitHub", "A green update pill appears in the title bar when a new version is ready"],
-  "1.3.0": ["✨ 'What's New' popup — see updates right after installing", "ℹ️ Version + What's-New link on the Bases tab"],
-  "1.2.0": ["🕒 Live local-time clock in the title bar"],
-  "1.1.0": ["Refreshed every pal's notes & locations to current 1.0/Feybreak data"],
-  "1.0.0": [
-    "Mounts, Bases, Breeding (calculator + path finder), Guide & Passives tabs",
-    "Pal search, click-any-pal detail popovers, 🗺️ spawn-map links",
-    "Recommended spheres, night flags, ranch drops & breed hints",
-  ],
-};
+// Version is single-sourced from package.json (via app.getVersion()); resolved at init.
+// Per-version notes live in src/notes.js (window.PP_NOTES). Never hardcode the version here.
+let APP_VERSION = "";
+function releaseNotes() { return window.PP_NOTES || {}; }
+async function resolveVersion() {
+  if (hasOverlay && window.overlay.getVersion) {
+    try { APP_VERSION = await window.overlay.getVersion(); } catch (e) { /* fall through */ }
+  }
+  if (!APP_VERSION) APP_VERSION = Object.keys(releaseNotes())[0] || "dev"; // preview/browser fallback = newest notes key
+}
 const WELCOME_NOTES = [
   "Plan base workers by level, mounts, breeding, passives & more",
   "Click any pal for full details · 🔍 search · 🗺️ spawn maps",
@@ -773,7 +770,7 @@ function showWhatsNew(mode) {
   const welcome = mode === "welcome";
   card.appendChild(el("div", "modal-title", welcome ? "Welcome to PalPocket 🎒" : "What's New — v" + APP_VERSION));
   if (!welcome) card.appendChild(el("div", "modal-meta", "Version " + APP_VERSION));
-  const bullets = welcome ? WELCOME_NOTES : (RELEASE_NOTES[APP_VERSION] || []);
+  const bullets = welcome ? WELCOME_NOTES : (releaseNotes()[APP_VERSION] || []);
   const ul = el("ul", "blist tips"); bullets.forEach(b => ul.appendChild(el("li", null, esc(b)))); card.appendChild(ul);
   const actions = el("div", "modal-actions");
   const ok = el("button", "map-btn", mode === "manual" ? "Close" : "Got it");
@@ -785,7 +782,7 @@ function maybeShowWhatsNew() {
   let last = null;
   try { last = localStorage.getItem("palpocket.lastSeenVersion"); } catch (e) {}
   if (!last) showWhatsNew("welcome");
-  else if (last !== APP_VERSION && (RELEASE_NOTES[APP_VERSION] || []).length) showWhatsNew("update");
+  else if (last !== APP_VERSION && (releaseNotes()[APP_VERSION] || []).length) showWhatsNew("update");
 }
 
 // ---- Quick search ----
@@ -947,7 +944,6 @@ function init() {
   document.addEventListener("keydown", e => { if (e.key === "Escape") { closePalModal(); const b = $("search-results"); if (b) b.classList.add("hidden"); } });
 
   startClock();
-  const verEl = $("ver"); if (verEl) verEl.textContent = "v" + APP_VERSION;
   const wn = $("whatsnew"); if (wn) wn.addEventListener("click", () => showWhatsNew("manual"));
   loadBaseSlots();
   renderSuitPicker();
@@ -984,7 +980,10 @@ function init() {
     $("close").addEventListener("click", () => window.close());
   }
 
-  maybeShowWhatsNew();
+  resolveVersion().then(() => {
+    const verEl = $("ver"); if (verEl) verEl.textContent = "v" + APP_VERSION;
+    maybeShowWhatsNew();
+  });
 }
 
 document.addEventListener("DOMContentLoaded", init);

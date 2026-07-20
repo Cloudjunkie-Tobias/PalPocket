@@ -7,6 +7,7 @@ contextBridge.exposeInMainWorld('overlay', {
   close: () => ipcRenderer.send('close-app'),
   minimize: () => ipcRenderer.send('minimize-app'),
   onClickThroughChanged: (cb) => ipcRenderer.on('click-through-changed', (_e, v) => cb(v)),
+  getVersion: () => ipcRenderer.invoke('get-version'),
   getStartup: () => ipcRenderer.invoke('get-startup'),
   setStartup: (v) => ipcRenderer.send('set-startup', v),
   openExternal: (url) => ipcRenderer.send('open-external', url),
