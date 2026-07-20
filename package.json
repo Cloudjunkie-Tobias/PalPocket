@@ -39,7 +39,8 @@
     "publish": {
       "provider": "github",
       "owner": "Cloudjunkie-Tobias",
-      "repo": "PalPocket"
+      "repo": "PalPocket",
+      "releaseType": "release"
     },
     "nsis": {
       "oneClick": false,
