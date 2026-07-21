@@ -1,6 +1,6 @@
 {
   "name": "palpocket",
-  "version": "3.0.0-beta.2",
+  "version": "3.0.0",
   "description": "Palworld worker-pal overlay: which pals to get by level + base planner",
   "main": "main.js",
   "scripts": {

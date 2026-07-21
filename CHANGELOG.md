@@ -2,7 +2,7 @@
 
 _Generated from `src/notes.js` by `npm run release`. Do not edit by hand._
 
-## v3.0.0-beta.1
+## v3.0.0
 
 - 💀 New Bosses tab — a tickable checklist of every Tower boss + notable Alpha/field bosses, with level, location, element & what they're weak to
 - 🎯 Progress bar tracks how many bosses you've beaten; tap a name to open its map
