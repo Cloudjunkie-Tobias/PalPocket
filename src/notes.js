@@ -4,7 +4,7 @@
 // Newest version FIRST. Add a new key here each release (the version number
 // itself comes from package.json — don't duplicate it).
 window.PP_NOTES = {
-  "3.3.0-beta.1": [
+  "3.3.0": [
     "⚡ You can ranch Electric Organs! Sparkit produces them via its Partner Skill — added to the Farming base's notable pals (and corrected the earlier tip).",
   ],
   "3.2.0": [
