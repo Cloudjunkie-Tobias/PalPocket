@@ -9,6 +9,10 @@ try { autoUpdater = require('electron-updater').autoUpdater; } catch (e) { /* de
 let win = null;
 let clickThrough = false;
 
+// The "PalPocket Beta" build is a separate app (own appId/name/userData) that always tracks pre-releases.
+// Its update channel ("beta") comes from the packaged app-update.yml; we just force prereleases on.
+const IS_BETA_BUILD = app.getName().toLowerCase().includes('beta');
+
 // ---- persisted overlay/user state (survives restarts) ----
 // One small JSON file in userData holds window bounds + opacity + pin + click-through + the beta-updates flag.
 const STATE_FILE = path.join(app.getPath('userData'), 'overlay-state.json');
@@ -97,9 +101,9 @@ function toggleClickThrough() {
 // Apply the beta-updates preference to the updater (prereleases only surface on the alpha client).
 function applyUpdaterChannel() {
   if (!autoUpdater) return;
-  // Alpha client (beta on) accepts pre-releases: the GitHub provider then picks the newest release
-  // INCLUDING prereleases and reads its latest.yml. Everyone else ignores prereleases and stays on stable.
-  autoUpdater.allowPrerelease = !!uiState.beta;
+  // The dedicated Beta app always tracks pre-releases. In the stable app it's opt-in via the settings toggle:
+  // with allowPrerelease on, the GitHub provider picks the newest release INCLUDING prereleases.
+  autoUpdater.allowPrerelease = IS_BETA_BUILD || !!uiState.beta;
 }
 
 app.whenReady().then(() => {
@@ -129,6 +133,7 @@ app.whenReady().then(() => {
   ipcMain.handle('get-ui-state', () => ({
     opacity: uiState.opacity, pinned: uiState.pinned,
     clickThrough: uiState.clickThrough, beta: uiState.beta,
+    betaBuild: IS_BETA_BUILD,
   }));
   ipcMain.on('set-beta', (_e, value) => {
     uiState.beta = !!value; saveState();

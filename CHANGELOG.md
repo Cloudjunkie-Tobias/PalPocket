@@ -2,6 +2,12 @@
 
 _Generated from `src/notes.js` by `npm run release`. Do not edit by hand._
 
+## v3.1.0-beta.1
+
+- 🧪 The Beta app is now a fully separate install — 'PalPocket Beta' sits alongside stable PalPocket with its own shortcut & settings, so you can run both at once
+- 🔖 A BETA badge in the title bar makes it obvious which window is which
+- 🔄 The Beta app always tracks the pre-release channel and won't disturb your stable install
+
 ## v3.0.0
 
 - 💀 New Bosses tab — a tickable checklist of every Tower boss + notable Alpha/field bosses, with level, location, element & what they're weak to

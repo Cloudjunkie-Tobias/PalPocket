@@ -10,3 +10,4 @@ Desktop.ini
 .DS_Store
 *.log
 .release-notes.tmp
+electron-builder-beta.json

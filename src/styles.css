@@ -45,6 +45,7 @@ body {
 .logo { width: 18px; height: 18px; border-radius: 4px; display: block; -webkit-user-drag: none; }
 .title { font-weight: 600; letter-spacing: 0.3px; }
 .seed-flag { font-size: 9px; color: #111; background: var(--warn); border-radius: 4px; padding: 1px 4px; text-transform: uppercase; }
+.beta-flag { background: var(--accent2); color: #06231a; font-weight: 700; }
 .clock { margin-left: auto; margin-right: 6px; font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .update-pill { -webkit-app-region: no-drag; font-size: 10px; font-weight: 700; color: #fff; background: var(--accent2); border: none; border-radius: 8px; padding: 1px 7px; cursor: pointer; margin-left: 4px; }
 .update-pill:hover { background: var(--accent); }

@@ -4,6 +4,11 @@
 // Newest version FIRST. Add a new key here each release (the version number
 // itself comes from package.json — don't duplicate it).
 window.PP_NOTES = {
+  "3.1.0-beta.1": [
+    "🧪 The Beta app is now a fully separate install — 'PalPocket Beta' sits alongside stable PalPocket with its own shortcut & settings, so you can run both at once",
+    "🔖 A BETA badge in the title bar makes it obvious which window is which",
+    "🔄 The Beta app always tracks the pre-release channel and won't disturb your stable install",
+  ],
   "3.0.0": [
     "💀 New Bosses tab — a tickable checklist of every Tower boss + notable Alpha/field bosses, with level, location, element & what they're weak to",
     "🎯 Progress bar tracks how many bosses you've beaten; tap a name to open its map",

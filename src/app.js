@@ -1082,11 +1082,22 @@ function init() {
         $("pin").classList.toggle("active", pinned);
         ct = !!s.clickThrough;
         $("click-through").classList.toggle("active", ct);
-        if ($("beta-updates")) $("beta-updates").checked = !!s.beta;
+        if (s.betaBuild && $("beta-flag")) $("beta-flag").classList.remove("hidden");
+        if ($("beta-updates")) {
+          if (s.betaBuild) {
+            // This IS the dedicated Beta app — always on the pre-release stream; lock the control.
+            $("beta-updates").checked = true;
+            $("beta-updates").disabled = true;
+            const lbl = $("beta-updates").parentElement;
+            if (lbl) lbl.title = "This is the Beta app — it always receives pre-release builds";
+          } else {
+            $("beta-updates").checked = !!s.beta;
+          }
+        }
       });
     }
     if (window.overlay.setBeta && $("beta-updates")) {
-      $("beta-updates").addEventListener("change", e => window.overlay.setBeta(e.target.checked));
+      $("beta-updates").addEventListener("change", e => { if (!e.target.disabled) window.overlay.setBeta(e.target.checked); });
     }
   } else {
     $("close").addEventListener("click", () => window.close());
