@@ -413,6 +413,9 @@ function renderBaseBody(body, t, slots) {
       body.appendChild(card);
     });
   }
+  // Ranch-by-drop overview (farming base only) — surfaces every ranch pal grouped by its product.
+  if (t.id === "farming") renderRanchByDrop(body);
+
   // structures (may be plain strings, or {item,count,note} to show how many to build)
   if (t.structures && t.structures.length) {
     const hasCounts = t.structures.some(s => s && typeof s === "object");
@@ -437,6 +440,30 @@ function renderBaseBody(body, t, slots) {
     t.tips.forEach(s => ul.appendChild(el("li", null, esc(s))));
     body.appendChild(ul);
   }
+}
+
+// Ranch products grouped by what they drop (surfaces ranch pals by product, not by Farming level).
+function renderRanchByDrop(body) {
+  const producers = (DATA.pals || []).filter(p => p.ranchDrop);
+  if (!producers.length) return;
+  const byDrop = {};
+  producers.forEach(p => { (byDrop[p.ranchDrop] = byDrop[p.ranchDrop] || []).push(p); });
+  body.appendChild(el("div", "group-h", "Ranch products — who makes what"));
+  Object.keys(byDrop).sort((a, b) => a.localeCompare(b)).forEach(drop => {
+    const row = el("div", "ranchdrop-row");
+    row.appendChild(el("div", "ranchdrop-name", "🐄 " + esc(drop)));
+    const chips = el("div", "ranchdrop-pals");
+    byDrop[drop]
+      .sort((a, b) => (a.catchLevel == null ? -1 : a.catchLevel) - (b.catchLevel == null ? -1 : b.catchLevel))
+      .forEach(p => {
+        const c = el("span", "ranchdrop-pal clickable",
+          esc(p.name) + (p.catchLevel != null ? ` <span class="rd-lv">Lv${p.catchLevel}</span>` : ""));
+        c.addEventListener("click", () => showPalDetail(p.name));
+        chips.appendChild(c);
+      });
+    row.appendChild(chips);
+    body.appendChild(row);
+  });
 }
 
 // Which of this base's key structures the character can research at their current level.

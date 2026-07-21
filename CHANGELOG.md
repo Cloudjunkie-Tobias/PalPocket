@@ -2,6 +2,11 @@
 
 _Generated from `src/notes.js` by `npm run release`. Do not edit by hand._
 
+## v3.4.0-beta.1
+
+- 🏗️ 'How many to build' structure counts now cover every base type (Mining, Breeding, All-in-one — not just Farming)
+- 🐄 New Ranch-by-drop view on the Farming base: see every ranch product and which pals make it, at a glance
+
 ## v3.3.0
 
 - ⚡ You can ranch Electric Organs! Sparkit produces them via its Partner Skill — added to the Farming base's notable pals (and corrected the earlier tip).

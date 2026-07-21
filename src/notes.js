@@ -4,6 +4,10 @@
 // Newest version FIRST. Add a new key here each release (the version number
 // itself comes from package.json — don't duplicate it).
 window.PP_NOTES = {
+  "3.4.0-beta.1": [
+    "🏗️ 'How many to build' structure counts now cover every base type (Mining, Breeding, All-in-one — not just Farming)",
+    "🐄 New Ranch-by-drop view on the Farming base: see every ranch product and which pals make it, at a glance",
+  ],
   "3.3.0": [
     "⚡ You can ranch Electric Organs! Sparkit produces them via its Partner Skill — added to the Farming base's notable pals (and corrected the earlier tip).",
   ],

@@ -243,6 +243,11 @@ select { background: var(--panel2); color: var(--text); border: 1px solid var(--
 .struct-list .struct-row { color: var(--text); display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px; }
 .struct-qty { display: inline-block; min-width: 40px; font-weight: 700; color: var(--accent2); background: var(--panel2); border: 1px solid var(--line); border-radius: 4px; padding: 0 5px; text-align: center; font-variant-numeric: tabular-nums; }
 .struct-note { color: var(--dim); font-style: italic; }
+.ranchdrop-row { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 7px 9px; margin-bottom: 6px; }
+.ranchdrop-name { font-weight: 600; color: var(--warn); font-size: 12px; margin-bottom: 5px; }
+.ranchdrop-pals { display: flex; flex-wrap: wrap; gap: 4px; }
+.ranchdrop-pal { font-size: 10px; padding: 2px 7px; border-radius: 10px; background: var(--panel2); border: 1px solid var(--line); }
+.ranchdrop-pal .rd-lv { color: var(--muted); }
 .tech-list { display: flex; flex-direction: column; gap: 3px; margin-bottom: 4px; }
 .tech-row { display: flex; align-items: center; gap: 7px; font-size: 11px; padding: 3px 7px; border-radius: 6px; background: var(--panel2); border: 1px solid var(--line); }
 .tech-row .tmark { width: 14px; text-align: center; flex-shrink: 0; }

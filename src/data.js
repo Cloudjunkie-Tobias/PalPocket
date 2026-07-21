@@ -1980,10 +1980,10 @@ window.PAL_DATA = {
       ],
       "structures": [
         "Build directly ON ore + coal (+ sulfur/quartz) deposits",
-        "Furnace → Improved / Electric Furnace for ingots",
-        "Crusher (stone → other materials)",
-        "Production Assembly Line for refining",
-        "Wooden/Metal chests beside the nodes + a Feed Box",
+        { "item": "Furnace (→ Improved / Electric)", "count": "2–3", "note": "ingots; more furnaces = more parallel smelting" },
+        { "item": "Crusher", "count": "1–2", "note": "stone → other materials" },
+        { "item": "Production Assembly Line", "count": "1–2", "note": "refining / mass crafting" },
+        { "item": "Chests + Feed Box", "count": "several + 1", "note": "beside the nodes" },
         "A Kindling pal (e.g. Jormuntide Ignis) to run furnaces"
       ],
       "tips": [
@@ -2055,12 +2055,12 @@ window.PAL_DATA = {
         }
       ],
       "structures": [
-        "Breeding Farm + attached Feed Box",
-        "Multiple Egg Incubators (hatch in parallel)",
-        "Ranch (Mozzarina + Chikipi + Beegarde)",
-        "Wheat Plantation + Mill (3 wheat → 1 flour)",
-        "Berry Plantation (Red Berries)",
-        "Cooking Pot + chests"
+        { "item": "Breeding Farm (+ Feed Box)", "count": "1–2", "note": "more farms = more eggs laid in parallel" },
+        { "item": "Egg Incubator", "count": "4–8", "note": "hatch many eggs at once — the real bottleneck" },
+        { "item": "Ranch", "count": "1–2", "note": "Mozzarina + Chikipi + Beegarde for Cake ingredients" },
+        { "item": "Wheat Plantation + Mill", "count": "2 + 1", "note": "flour for Cake (3 wheat → 1 flour)" },
+        { "item": "Berry Plantation", "count": "2", "note": "Red Berries for Cake" },
+        { "item": "Cooking Pot", "count": "1", "note": "bake Cake (kicks off breeding); + chests" }
       ],
       "tips": [
         "One Cake = one egg cycle. A cake bottleneck is the #1 pitfall — build 2–3 ranches of ingredient pals + several berry/wheat plots.",
@@ -2226,14 +2226,14 @@ window.PAL_DATA = {
         }
       ],
       "structures": [
-        "Palbox, chests + Feed Box",
-        "Furnace → Electric Furnace",
-        "Production Assembly Line",
-        "Cooking Pot / Electric Kitchen",
-        "Berry + Wheat Plantations + Mill",
-        "Power Generator (needs an electricity pal)",
-        "Ranch, Crusher, High-Quality Workbench",
-        "Pal Bed + Hot Spring to keep pals rested & happy"
+        { "item": "Chests + Feed Box (+ Palbox)", "count": "several", "note": "sorted storage near stations" },
+        { "item": "Furnace (→ Electric)", "count": "2", "note": "ingots" },
+        { "item": "Production Assembly Line", "count": "1–2" },
+        { "item": "Cooking Pot / Electric Kitchen", "count": "1" },
+        { "item": "Berry + Wheat Plantation + Mill", "count": "2 + 2 + 1" },
+        { "item": "Power Generator", "count": "1–2", "note": "needs an Electricity pal" },
+        { "item": "Ranch / Crusher / HQ Workbench", "count": "1 each" },
+        { "item": "Pal Bed + Hot Spring", "count": "cover all workers", "note": "keeps pals rested & sane" }
       ],
       "tips": [
         "1.0 meta: one high-level specialist per job beats many low-level generalists (a Handiwork 4 pal > three Handiwork 2s).",
