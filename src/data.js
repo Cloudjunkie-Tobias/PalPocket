@@ -2130,20 +2130,27 @@ window.PAL_DATA = {
           "why": "Flame Organs on a ranch."
         },
         {
+          "name": "Depresso",
+          "why": "Venom Glands on a ranch (Caprity Noct also works). Cheap early source for arrows/potions."
+        },
+        {
           "name": "Lyleen/Petallia + Jormuntide/Pengullet",
           "why": "Planting + Watering pals to auto-run crop plots."
         }
       ],
       "structures": [
-        "One Ranch per product pal (each holds only a few — run multiples)",
-        "Wheat / Berry / Tomato / Lettuce Plantations",
-        "Mill for flour",
-        "Watering + Planting stations",
-        "Cooking Pot + food chests",
-        "Specialty ranches: Woolipop (cotton candy), Mau (gold coins), Sibelyx (high-quality cloth)"
+        { "item": "Ranch", "count": "4–6", "note": "one product-type per ranch; each holds ~4 pals" },
+        { "item": "Berry Plantation", "count": "2–3", "note": "core early food + Cake ingredient" },
+        { "item": "Wheat Plantation", "count": "2", "note": "feeds the Mill" },
+        { "item": "Tomato / Lettuce Plantation", "count": "1–2 each", "note": "for salads / recipes" },
+        { "item": "Mill", "count": "1–2", "note": "wheat → flour" },
+        { "item": "Watering + Planting stations", "count": "enough to cover every plot" },
+        { "item": "Cooking Pot", "count": "1–2", "note": "+ dedicated food chests" },
+        { "item": "Specialty ranches", "count": "as needed", "note": "Woolipop (cotton candy), Mau (gold), Sibelyx (HQ cloth)" }
       ],
       "tips": [
         "Ranch capacity is limited — run several ranches, one product-type each, for clean sorting.",
+        "⚡ Electric Organ is NOT a ranch product — you can't farm it here. Get it by catching/defeating Electric pals (Sparkit, Jolthog, Grizzbolt…) or buying from a Wandering Merchant.",
         "Pick a flat, mild-climate spot (Plateau of Beginnings early, or the flatlands near Fort Ruins) so crops/pals aren't hit by heat or cold.",
         "Pair Planting + Watering + Gathering so crops auto-plant, water and harvest.",
         "A Vixy ranch is a great early income / Pal Sphere source."

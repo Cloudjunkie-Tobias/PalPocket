@@ -413,11 +413,21 @@ function renderBaseBody(body, t, slots) {
       body.appendChild(card);
     });
   }
-  // structures
+  // structures (may be plain strings, or {item,count,note} to show how many to build)
   if (t.structures && t.structures.length) {
-    body.appendChild(el("div", "group-h", "Key structures"));
-    const ul = el("ul", "blist");
-    t.structures.forEach(s => ul.appendChild(el("li", null, esc(s))));
+    const hasCounts = t.structures.some(s => s && typeof s === "object");
+    body.appendChild(el("div", "group-h", "Key structures" + (hasCounts ? " — how many to build" : "")));
+    if (hasCounts) body.appendChild(el("div", "slot-summary", "Suggested counts for a maxed base:"));
+    const ul = el("ul", "blist" + (hasCounts ? " struct-list" : ""));
+    t.structures.forEach(s => {
+      if (s && typeof s === "object") {
+        const note = s.note ? ` <span class="struct-note">— ${esc(s.note)}</span>` : "";
+        ul.appendChild(el("li", "struct-row",
+          `<span class="struct-qty">${esc(s.count || "1")}×</span> <b>${esc(s.item)}</b>${note}`));
+      } else {
+        ul.appendChild(el("li", null, esc(s)));
+      }
+    });
     body.appendChild(ul);
   }
   // tips

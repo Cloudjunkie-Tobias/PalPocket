@@ -4,6 +4,11 @@
 // Newest version FIRST. Add a new key here each release (the version number
 // itself comes from package.json — don't duplicate it).
 window.PP_NOTES = {
+  "3.2.0-beta.1": [
+    "🌾 Farming/Ranch base: added the Venom Gland producer (Depresso) to notable pals",
+    "🏗️ Key structures now show suggested build counts (how many of each to build for a maxed base) — starting with the Farming base",
+    "⚡ Clarified that Electric Organ can't be ranched — noted where to actually get it",
+  ],
   "3.1.0": [
     "🏭 Base worker slots now go up to 50 (was 15) — supports servers running the raised vanilla worker cap via World Settings",
     "ℹ️ Slots above 15 are flagged as raised-via-World-Settings; base level still tops out where in-game leveling does",

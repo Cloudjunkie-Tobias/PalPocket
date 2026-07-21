@@ -2,6 +2,12 @@
 
 _Generated from `src/notes.js` by `npm run release`. Do not edit by hand._
 
+## v3.2.0-beta.1
+
+- 🌾 Farming/Ranch base: added the Venom Gland producer (Depresso) to notable pals
+- 🏗️ Key structures now show suggested build counts (how many of each to build for a maxed base) — starting with the Farming base
+- ⚡ Clarified that Electric Organ can't be ranched — noted where to actually get it
+
 ## v3.1.0
 
 - 🏭 Base worker slots now go up to 50 (was 15) — supports servers running the raised vanilla worker cap via World Settings
