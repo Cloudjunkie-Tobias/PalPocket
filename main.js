@@ -97,9 +97,9 @@ function toggleClickThrough() {
 // Apply the beta-updates preference to the updater (prereleases only surface on the alpha client).
 function applyUpdaterChannel() {
   if (!autoUpdater) return;
-  // Alpha client (beta on) tracks the "beta" channel & accepts prereleases; everyone else stays on stable "latest".
+  // Alpha client (beta on) accepts pre-releases: the GitHub provider then picks the newest release
+  // INCLUDING prereleases and reads its latest.yml. Everyone else ignores prereleases and stays on stable.
   autoUpdater.allowPrerelease = !!uiState.beta;
-  autoUpdater.channel = uiState.beta ? 'beta' : 'latest';
 }
 
 app.whenReady().then(() => {
