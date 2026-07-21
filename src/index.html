@@ -10,7 +10,7 @@
   <div id="app">
     <header id="titlebar">
       <div class="tb-drag">
-        <span class="logo">🎒</span><span class="title">PalPocket</span>
+        <img class="logo" src="logo.png" alt="" draggable="false" /><span class="title">PalPocket</span>
         <span id="seed-flag" class="seed-flag" title="Using placeholder data">seed</span>
         <span id="clock" class="clock" title="Your local time"></span>
       </div>
@@ -39,6 +39,7 @@
       <button class="tab" data-tab="bylevel">By Level</button>
       <button class="tab" data-tab="ladders">Ladders</button>
       <button class="tab" data-tab="mounts">Mounts</button>
+      <button class="tab" data-tab="bosses">Bosses</button>
       <button class="tab" data-tab="base">Bases</button>
       <button class="tab" data-tab="breeding">Breeding</button>
       <button class="tab" data-tab="guide">Guide</button>
@@ -82,6 +83,19 @@
         <div id="mounts-out"></div>
       </section>
 
+      <section id="tab-bosses" class="tabpanel">
+        <div class="filter-row">
+          <select id="bosses-filter">
+            <option value="">All bosses</option>
+            <option value="tower">🗼 Towers only</option>
+            <option value="alpha">💀 Alphas only</option>
+          </select>
+          <label class="avail-toggle" title="Hide bosses you've already beaten"><input id="bosses-hidedone" type="checkbox" /> hide done</label>
+        </div>
+        <div id="bosses-progress" class="boss-progress"></div>
+        <div id="bosses-out"></div>
+      </section>
+
       <section id="tab-base" class="tabpanel">
         <div class="hint">Pick a base to plan &amp; level:</div>
         <div id="btype-picker" class="btype-picker"></div>
@@ -92,6 +106,9 @@
         </details>
         <div class="startup-row">
           <label><input id="startup" type="checkbox" /> Launch on Windows startup</label>
+        </div>
+        <div class="startup-row">
+          <label title="Receive pre-release (beta) builds before they ship to everyone"><input id="beta-updates" type="checkbox" /> Get beta updates (early/test builds)</label>
         </div>
         <div class="hotkeys">
           <div><b>Hotkeys</b></div>

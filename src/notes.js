@@ -4,6 +4,13 @@
 // Newest version FIRST. Add a new key here each release (the version number
 // itself comes from package.json — don't duplicate it).
 window.PP_NOTES = {
+  "3.0.0-beta.1": [
+    "💀 New Bosses tab — a tickable checklist of every Tower boss + notable Alpha/field bosses, with level, location, element & what they're weak to",
+    "🎯 Progress bar tracks how many bosses you've beaten; tap a name to open its map",
+    "💾 The overlay now remembers where you left it — window position, size, opacity & pin all persist between launches",
+    "🔮 Title-bar logo now matches the Pal Sphere app icon",
+    "🧪 Opt-in 'beta updates' setting (Bases tab) for trying early builds",
+  ],
   "2.0.0": [
     "🎉 Milestone release — now published on GitHub with automatic updates",
     "Under the hood: one-command releases + single-source versioning for smoother, more reliable updates",

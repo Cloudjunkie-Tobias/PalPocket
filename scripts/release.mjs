@@ -10,6 +10,7 @@ const changelogOnly = process.argv.includes("--changelog-only");
 const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"));
 const version = pkg.version;
 const { owner, repo } = pkg.build.publish;
+const isPrerelease = version.includes("-"); // e.g. 3.0.0-beta.1 → GitHub pre-release, not the "latest" pointer
 
 // Load canonical notes from src/notes.js (it assigns window.PP_NOTES).
 const w = {};
@@ -45,17 +46,27 @@ console.log(`▶ Building & publishing PalPocket v${version} to ${owner}/${repo}
 execSync("npx electron-builder --win --publish always", { stdio: "inherit", env: { ...process.env, GH_TOKEN: token } });
 
 // --- set the GitHub release notes from the canonical source ---
+const betaBanner = isPrerelease
+  ? `> 🧪 **Beta / pre-release.** Only the alpha client sees this (enable **Get beta updates** on the Bases tab). ` +
+    `Stable users are unaffected. To try it now, download an asset below and run it once.\n\n`
+  : "";
+const updateLine = isPrerelease
+  ? `_Clients with beta updates on will auto-update to newer betas; everyone else stays on stable._`
+  : `_Installed builds auto-update from here; portable users re-download._`;
 const body =
   `Palworld companion overlay for Windows.\n\n` +
+  betaBanner +
   `## Install\n` +
   `Download **PalPocket-Setup-${version}.exe** (under Assets) and run it — per-user, no admin. ` +
   `Prefer no install? Use **PalPocket-portable.exe**.\n\n` +
   `> Unsigned build → Windows SmartScreen warns on first run: **More info → Run anyway**.\n\n` +
   `## What's new in v${version}\n` +
   NOTES[version].map((b) => `- ${b}`).join("\n") + "\n\n" +
-  `_Installed builds auto-update from here; portable users re-download._`;
+  updateLine;
 fs.writeFileSync(".release-notes.tmp", body);
-execSync(`${GH} release edit v${version} --repo ${owner}/${repo} --title "PalPocket v${version}" --notes-file .release-notes.tmp`, { stdio: "inherit" });
+// Pre-releases are flagged and kept OFF the "latest" pointer so stable friends never get pulled onto a beta.
+const flags = isPrerelease ? "--prerelease --latest=false" : "--latest";
+execSync(`${GH} release edit v${version} --repo ${owner}/${repo} ${flags} --title "PalPocket v${version}" --notes-file .release-notes.tmp`, { stdio: "inherit" });
 fs.unlinkSync(".release-notes.tmp");
 
-console.log(`\n✓ Published v${version}. Next: commit (incl. CHANGELOG.md) & push, then update the vault.`);
+console.log(`\n✓ Published v${version}${isPrerelease ? " (pre-release)" : ""}. Next: commit (incl. CHANGELOG.md) & push, then update the vault.`);

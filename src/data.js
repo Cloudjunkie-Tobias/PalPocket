@@ -3855,5 +3855,43 @@ window.PAL_DATA = {
     "Ghangler",
     "Helzephyr",
     "Lyleen Noct"
-  ]
+  ],
+  "bosses": {
+    "towers": [
+      { "name": "Zoe & Grizzbolt", "faction": "Rayne Syndicate Tower", "level": 10, "location": "Windswept Hills — Rayne Syndicate Tower", "element": "Electric", "weakness": "Ground", "note": "First tower. Bring a Ground pal (Rushoar/Digtoise); Grizzbolt is a slow, big target." },
+      { "name": "Lily & Lyleen", "faction": "Free Pal Alliance Tower", "level": 20, "location": "Bamboo Groves — Free Pal Alliance Tower", "element": "Grass", "weakness": "Fire", "note": "Bring Fire pals (Arsox); Lyleen self-heals, so burst it down fast." },
+      { "name": "Axel & Orserk", "faction": "Brothers of the Eternal Pyre", "level": 30, "location": "Mount Obsidian volcano region", "element": "Electric/Dragon", "weakness": "Ground", "note": "Ground beats the Electric side; Ice helps against the Dragon typing." },
+      { "name": "Marcus & Faleris", "faction": "PIDF Tower", "level": 40, "location": "Dessicated Desert", "element": "Fire", "weakness": "Water", "note": "Bring Water pals (Jormuntide, Penking) to hard-counter the Fire phoenix." },
+      { "name": "Victor & Shadowbeak", "faction": "PAL Genetic Research Unit", "level": 50, "location": "Astral Mountains (snow region)", "element": "Dark", "weakness": "Dragon", "note": "Dragon pals (Jetragon, Orserk) counter the Dark boss; final base-game tower." },
+      { "name": "Saya & Selyne", "faction": "Moonflower Tower", "level": 55, "location": "Sakurajima Island", "element": "Dark", "weakness": "Dragon", "note": "Sakurajima tower. Bring Dragon pals and strong burst — high HP." },
+      { "name": "Bjorn & Bastigar", "faction": "Feybreak Tower", "level": 60, "location": "Feybreak Island", "element": "Ice", "weakness": "Fire", "note": "Feybreak tower. Bastigar is pure Ice — melts to a strong Fire pal with a damage passive." }
+    ],
+    "alphas": [
+      { "name": "Nitewing", "level": 15, "location": "Ice Wind Island / Windswept Hills", "element": "Neutral", "weakness": "Dark", "note": "One of the earliest flying mounts; easy to obtain." },
+      { "name": "Chillet", "level": 18, "location": "Bamboo Groves", "element": "Ice/Dragon", "weakness": "Dragon", "note": "Great early mount; fast dash-and-glide traversal." },
+      { "name": "Dumud", "level": 20, "location": "Ice Wind Island / Bamboo Groves", "element": "Ground", "weakness": "Grass", "note": "Mining worker that also drops Gold Coins when worked." },
+      { "name": "Felbat", "level": 22, "location": "Forgotten Island", "element": "Dark", "weakness": "Dragon", "note": "Early flying mount with Gathering/Transporting utility." },
+      { "name": "Broncherry", "level": 25, "location": "Bamboo Groves", "element": "Grass", "weakness": "Fire", "note": "Good Watering + Planting worker; rideable food-farm helper." },
+      { "name": "Univolt", "level": 28, "location": "Sea Breeze Archipelago / Bamboo Groves", "element": "Electric", "weakness": "Ground", "note": "Fast electric ride and a Generating Electricity worker." },
+      { "name": "Beakon", "level": 30, "location": "Bamboo Groves", "element": "Electric", "weakness": "Ground", "note": "Fast flying mount plus Generating Electricity work." },
+      { "name": "Warsect", "level": 30, "location": "Verdant Brook / Astral foothills", "element": "Grass/Ground", "weakness": "Fire", "note": "Tanky mount; strong Handiwork and Planting worker." },
+      { "name": "Elphidran", "level": 30, "location": "Moonless Shore / Astral Mountains", "element": "Dragon", "weakness": "Dragon", "note": "Reliable mid-game flying mount, easier than legendaries." },
+      { "name": "Quivern", "level": 30, "location": "Twilight Dunes", "element": "Dragon", "weakness": "Dragon", "note": "Flying mount with Transporting work; solid all-rounder." },
+      { "name": "Relaxaurus", "level": 30, "location": "Bamboo Groves", "element": "Dragon/Water", "weakness": "Dragon", "note": "Missile-launcher mount; strong ranged combat platform." },
+      { "name": "Bushi", "level": 30, "location": "Bamboo Groves", "element": "Fire", "weakness": "Water", "note": "Kindling worker and decent melee combat pal." },
+      { "name": "Menasting", "level": 30, "location": "Dessicated Desert", "element": "Ground/Dark", "weakness": "Grass", "note": "Tanky scorpion mount; decent Mining worker." },
+      { "name": "Verdash", "level": 35, "location": "Twilight Dunes", "element": "Grass", "weakness": "Fire", "note": "Fast agile ground mount; good Planting worker." },
+      { "name": "Sibelyx", "level": 40, "location": "Twilight Dunes", "element": "Ice", "weakness": "Fire", "note": "Key Cloth-producing worker (Cooling)." },
+      { "name": "Fenglope", "level": 40, "location": "Bamboo Groves", "element": "Grass", "weakness": "Fire", "note": "Fast mount with a double-jump; excellent for exploration." },
+      { "name": "Jormuntide", "level": 45, "location": "Bamboo Groves", "element": "Water/Dragon", "weakness": "Electric", "note": "Top Watering worker and a strong water mount." },
+      { "name": "Anubis", "level": 47, "location": "Twilight Dunes / Dessicated Desert", "element": "Ground", "weakness": "Grass", "note": "Best-in-slot Handiwork worker and a strong combat mount." },
+      { "name": "Blazamut", "level": 49, "location": "Mount Obsidian", "element": "Fire", "weakness": "Water", "note": "Powerful late-game Fire combat mount; heavy hitter." },
+      { "name": "Jetragon", "level": 50, "location": "Deep Sand Dunes (Dessicated Desert)", "element": "Dragon", "weakness": "Dragon", "note": "Legendary. Fastest flying mount in the game." },
+      { "name": "Frostallion", "level": 50, "location": "Land of Absolute Zero", "element": "Ice", "weakness": "Fire", "note": "Legendary. Best Ice flying mount; buffs Ice pals as a base worker." },
+      { "name": "Paladius", "level": 50, "location": "Dessicated Desert", "element": "Neutral", "weakness": "Dark", "note": "Legendary. Fast armored ground mount; pairs with Necromus." },
+      { "name": "Necromus", "level": 50, "location": "Dessicated Desert", "element": "Dark", "weakness": "Dragon", "note": "Legendary. High-damage combat mount; strong PvE burst." },
+      { "name": "Knocklem", "level": 55, "location": "Sakurajima Canyon", "element": "Ground", "weakness": "Grass", "note": "Sakurajima alpha; heavy-hitting Ground mount and Mining worker." },
+      { "name": "Frostallion Noct", "level": 60, "location": "Feybreak Island", "element": "Dark/Ice", "weakness": "Dragon", "note": "Feybreak legendary variant; powerful Dark/Ice flying combat mount." }
+    ]
+  }
 };

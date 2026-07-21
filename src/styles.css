@@ -42,7 +42,7 @@ body {
   border-bottom: 1px solid var(--line);
 }
 .tb-drag { -webkit-app-region: drag; display: flex; align-items: center; gap: 6px; flex: 1; }
-.logo { font-size: 15px; }
+.logo { width: 18px; height: 18px; border-radius: 4px; display: block; -webkit-user-drag: none; }
 .title { font-weight: 600; letter-spacing: 0.3px; }
 .seed-flag { font-size: 9px; color: #111; background: var(--warn); border-radius: 4px; padding: 1px 4px; text-transform: uppercase; }
 .clock { margin-left: auto; margin-right: 6px; font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
@@ -279,6 +279,24 @@ select { background: var(--panel2); color: var(--text); border: 1px solid var(--
 .special-row { font-size: 11px; color: var(--muted); background: var(--panel2); border: 1px solid var(--line); border-radius: 6px; padding: 3px 7px; }
 .special-row .plus, .special-row .arrow { color: var(--dim); }
 .special-row b { color: var(--accent2); }
+
+/* Bosses tab */
+.boss-progress { margin: 2px 0 6px; }
+.boss-prog-label { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+.boss-prog-label b { color: var(--accent2); font-size: 13px; }
+.boss-progress .spd-track { height: 8px; }
+.pal.boss.done { opacity: 0.55; }
+.pal.boss.done .pal-name { text-decoration: line-through; color: var(--muted); }
+.pal.boss.tower { border-color: rgba(4,155,229,0.4); background: linear-gradient(180deg, rgba(4,155,229,0.10), var(--panel)); }
+.boss-check { display: flex; align-items: center; gap: 7px; cursor: pointer; }
+.boss-check input { width: 15px; height: 15px; accent-color: var(--accent2); cursor: pointer; flex: none; }
+.boss-faction { font-size: 10px; color: var(--dim); margin-top: 2px; }
+.elem-row { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+.elem-chip { font-size: 10px; padding: 1px 7px; border-radius: 10px; background: var(--panel2); border: 1px solid var(--line); }
+.elem-chip b { font-weight: 700; }
+.elem-fire b { color: #ff7a45; } .elem-water b { color: #38bdf8; } .elem-grass b { color: #4ade80; }
+.elem-electric b { color: #fbbf24; } .elem-ground b { color: #d6a06a; } .elem-ice b { color: #7dd3fc; }
+.elem-dark b { color: #b18cff; } .elem-dragon b { color: #f472b6; } .elem-neutral b { color: #d7dee8; }
 
 /* scrollbar */
 ::-webkit-scrollbar { width: 8px; }

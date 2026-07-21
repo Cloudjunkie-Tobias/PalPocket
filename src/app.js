@@ -35,6 +35,9 @@ const state = {
   breedA: "",
   breedB: "",
   passivesFilter: "",
+  bossesFilter: "",
+  bossesHideDone: false,
+  bossDone: {},
 };
 
 // ---- persistence (per-base-type slot counts survive restarts) ----
@@ -48,6 +51,16 @@ function saveBaseSlots() {
   try { localStorage.setItem(LS_KEY, JSON.stringify(state.baseSlots)); } catch (e) {}
 }
 function slotsOf(id) { return state.baseSlots[id] || DEFAULT_SLOTS; }
+
+// ---- persistence (boss checklist survives restarts) ----
+const LS_BOSS = "palpocket.bossDone";
+function loadBossDone() {
+  try { state.bossDone = JSON.parse(localStorage.getItem(LS_BOSS)) || {}; }
+  catch (e) { state.bossDone = {}; }
+}
+function saveBossDone() {
+  try { localStorage.setItem(LS_BOSS, JSON.stringify(state.bossDone)); } catch (e) {}
+}
 // A base gains +1 worker slot per base level (2 slots @ Lv1 → 15 @ Lv14), so base level ≈ slots − 1.
 function baseLevelFromSlots(slots) { return Math.max(1, slots - 1); }
 
@@ -823,6 +836,7 @@ function switchTab(name) {
   if (name === "bylevel") renderByLevel();
   if (name === "ladders") renderLadders();
   if (name === "mounts") renderMounts();
+  if (name === "bosses") renderBosses();
   if (name === "base") { renderBaseTypePicker(); renderBaseTypeDetail(); renderBase(); }
   if (name === "breeding") renderBreeding();
   if (name === "guide") renderGuide();
@@ -903,6 +917,86 @@ function renderGuide() {
   });
 }
 
+// ---- Bosses: Alpha & Tower checklist ----
+const ELEM_ICON = {
+  Neutral: "⭐", Fire: "🔥", Water: "💧", Grass: "🌿", Electric: "⚡",
+  Ground: "⛰️", Ice: "❄️", Dark: "🌑", Dragon: "🐉",
+};
+function elemChip(label, elem, title) {
+  // elem may be a compound like "Ice/Dragon"; pick the first for the icon.
+  const first = String(elem || "").split("/")[0].trim();
+  const icon = ELEM_ICON[first] || "";
+  const c = el("span", "elem-chip elem-" + first.toLowerCase(), `${icon} ${label}: <b>${esc(elem)}</b>`);
+  if (title) c.title = title;
+  return c;
+}
+function bossKey(b) { return (b.kind || "") + ":" + b.name; }
+function bossCard(b) {
+  const done = !!state.bossDone[bossKey(b)];
+  const card = el("div", "pal boss" + (b.kind === "tower" ? " tower" : "") + (done ? " done" : ""));
+
+  const top = el("div", "pal-top");
+  const left = el("label", "boss-check");
+  const cb = el("input"); cb.type = "checkbox"; cb.checked = done;
+  cb.addEventListener("change", () => {
+    if (cb.checked) state.bossDone[bossKey(b)] = 1; else delete state.bossDone[bossKey(b)];
+    saveBossDone(); renderBosses();
+  });
+  const nm = el("span", "pal-name clickable", (b.kind === "tower" ? "🗼 " : "💀 ") + esc(b.name));
+  // Tower boss names are "Human & Pal"; open the pal's map (part after &).
+  const mapName = b.kind === "tower" && b.name.includes("&") ? b.name.split("&").pop().trim() : b.name;
+  nm.addEventListener("click", () => openMap(mapName));
+  left.appendChild(cb); left.appendChild(nm);
+  top.appendChild(left);
+  top.appendChild(el("span", "pal-catch " + (state.level >= (b.level || 0) ? "avail" : "locked"), "Lv " + esc(b.level)));
+  card.appendChild(top);
+
+  if (b.faction) card.appendChild(el("div", "boss-faction", esc(b.faction)));
+
+  const chips = el("div", "elem-row");
+  if (b.element) chips.appendChild(elemChip("Type", b.element));
+  if (b.weakness) chips.appendChild(elemChip("Weak to", b.weakness, "Bring " + b.weakness + "-type pals & attacks"));
+  card.appendChild(chips);
+
+  if (b.location) card.appendChild(el("div", "pal-loc", "📍 " + esc(b.location)));
+  if (b.note) card.appendChild(el("div", "pal-note", esc(b.note)));
+  return card;
+}
+function renderBossGroup(out, label, list) {
+  if (!list.length) return;
+  const shown = state.bossesHideDone ? list.filter(b => !state.bossDone[bossKey(b)]) : list;
+  if (!shown.length) return;
+  const doneN = list.filter(b => state.bossDone[bossKey(b)]).length;
+  out.appendChild(el("div", "group-h", `${label} — ${doneN}/${list.length} beaten`));
+  shown.slice().sort((a, b) => (a.level || 0) - (b.level || 0)).forEach(b => out.appendChild(bossCard(b)));
+}
+function renderBosses() {
+  const out = $("bosses-out");
+  if (!out) return;
+  out.innerHTML = "";
+  const B = DATA.bosses || {};
+  const towers = (B.towers || []).map(b => ({ ...b, kind: "tower" }));
+  const alphas = (B.alphas || []).map(b => ({ ...b, kind: "alpha" }));
+  const all = towers.concat(alphas);
+
+  const prog = $("bosses-progress");
+  if (prog) {
+    if (!all.length) { prog.innerHTML = ""; }
+    else {
+      const doneN = all.filter(b => state.bossDone[bossKey(b)]).length;
+      const pct = Math.round((doneN / all.length) * 100);
+      prog.innerHTML = `<div class="boss-prog-label"><b>${doneN}</b> / ${all.length} bosses beaten</div>` +
+        `<div class="spd-track"><div class="spd-fill" style="width:${pct}%"></div></div>`;
+    }
+  }
+
+  if (!all.length) { out.appendChild(el("div", "empty", "No boss data loaded yet.")); return; }
+  const f = state.bossesFilter;
+  if (f !== "alpha") renderBossGroup(out, "🗼 Tower bosses", towers);
+  if (f !== "tower") renderBossGroup(out, "💀 Alpha & field bosses", alphas);
+  if (!out.children.length) out.appendChild(el("div", "empty", "Nothing to show — all done or filtered out. 🎉"));
+}
+
 function setLevel(v) {
   v = Math.max(1, Math.min(70, parseInt(v, 10) || 1));
   state.level = v;
@@ -939,6 +1033,8 @@ function init() {
   $("breed-b").addEventListener("change", e => { state.breedB = e.target.value; renderBreedResult(); });
   $("breed-target").addEventListener("change", e => renderBreedPath(e.target.value));
   $("passives-filter").addEventListener("change", e => { state.passivesFilter = e.target.value; renderPassives(); });
+  $("bosses-filter").addEventListener("change", e => { state.bossesFilter = e.target.value; renderBosses(); });
+  $("bosses-hidedone").addEventListener("change", e => { state.bossesHideDone = e.target.checked; renderBosses(); });
   $("search").addEventListener("input", e => runSearch(e.target.value));
   $("search").addEventListener("blur", () => setTimeout(() => { const b = $("search-results"); if (b) b.classList.add("hidden"); }, 150));
   document.addEventListener("keydown", e => { if (e.key === "Escape") { closePalModal(); const b = $("search-results"); if (b) b.classList.add("hidden"); } });
@@ -946,6 +1042,7 @@ function init() {
   startClock();
   const wn = $("whatsnew"); if (wn) wn.addEventListener("click", () => showWhatsNew("manual"));
   loadBaseSlots();
+  loadBossDone();
   renderSuitPicker();
   fillBylevelFilter();
   fillBreedSelects();
@@ -975,6 +1072,21 @@ function init() {
     if (window.overlay.getStartup) {
       window.overlay.getStartup().then(v => { $("startup").checked = !!v; });
       $("startup").addEventListener("change", e => window.overlay.setStartup(e.target.checked));
+    }
+    // Restore saved UI prefs so the controls match the window we just reopened.
+    if (window.overlay.getUiState) {
+      window.overlay.getUiState().then(s => {
+        if (!s) return;
+        if ($("opacity")) $("opacity").value = Math.round((s.opacity || 1) * 100);
+        pinned = s.pinned !== false;
+        $("pin").classList.toggle("active", pinned);
+        ct = !!s.clickThrough;
+        $("click-through").classList.toggle("active", ct);
+        if ($("beta-updates")) $("beta-updates").checked = !!s.beta;
+      });
+    }
+    if (window.overlay.setBeta && $("beta-updates")) {
+      $("beta-updates").addEventListener("change", e => window.overlay.setBeta(e.target.checked));
     }
   } else {
     $("close").addEventListener("click", () => window.close());
