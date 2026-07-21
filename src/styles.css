@@ -126,6 +126,7 @@ input[type=number] {
 .slot-summary { font-size: 11px; color: var(--muted); margin: 8px 0 6px; }
 .slot-summary b { color: var(--text); }
 .slot-summary.over b { color: #e5484d; }
+.slot-note { color: var(--dim); font-style: italic; }
 
 /* Pal cards */
 .pal {

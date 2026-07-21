@@ -62,7 +62,10 @@ function saveBossDone() {
   try { localStorage.setItem(LS_BOSS, JSON.stringify(state.bossDone)); } catch (e) {}
 }
 // A base gains +1 worker slot per base level (2 slots @ Lv1 → 15 @ Lv14), so base level ≈ slots − 1.
-function baseLevelFromSlots(slots) { return Math.max(1, slots - 1); }
+// Leveling tops out at 15 slots; slots 16–50 come from raised World Settings, so cap the derived level there.
+const LEVEL_SLOTS_CAP = 15;
+function baseLevelFromSlots(slots) { return Math.max(1, Math.min(LEVEL_SLOTS_CAP, slots) - 1); }
+const MAX_SLOTS = (DATA.baseCapacity && DATA.baseCapacity.maxWorkersPerBase) || 50;
 
 // ---- helpers ----
 const $ = (id) => document.getElementById(id);
@@ -358,11 +361,11 @@ function renderBaseTypeDetail() {
   // per-base-type slot control (rendered once; the body below re-renders on change)
   const ctrl = el("div", "btype-levelbar");
   ctrl.innerHTML = `<label>Worker slots<span class="sub">(pal beds)</span></label>`;
-  const range = el("input"); range.type = "range"; range.min = "1"; range.max = "15"; range.value = slotsOf(t.id);
-  const num = el("input", "btype-lvlnum"); num.type = "number"; num.min = "1"; num.max = "15"; num.value = slotsOf(t.id);
+  const range = el("input"); range.type = "range"; range.min = "1"; range.max = String(MAX_SLOTS); range.value = slotsOf(t.id);
+  const num = el("input", "btype-lvlnum"); num.type = "number"; num.min = "1"; num.max = String(MAX_SLOTS); num.value = slotsOf(t.id);
   const body = el("div", "btype-body");
   const apply = (v) => {
-    v = Math.max(1, Math.min(15, parseInt(v, 10) || 1));
+    v = Math.max(1, Math.min(MAX_SLOTS, parseInt(v, 10) || 1));
     state.baseSlots[t.id] = v; saveBaseSlots();
     range.value = v; num.value = v;
     renderBaseBody(body, t, v);
@@ -385,8 +388,9 @@ function renderBaseBody(body, t, slots) {
   const works = t.works && t.works.length ? (t.works[0] === "*" ? allSuits() : t.works) : [];
   if (works.length) {
     body.appendChild(el("div", "group-h", "Best in slot"));
+    const raised = slots > LEVEL_SLOTS_CAP ? ` <span class="slot-note">(${slots - LEVEL_SLOTS_CAP} above the level-${LEVEL_SLOTS_CAP} cap — raised via World Settings)</span>` : "";
     body.appendChild(el("div", "slot-summary",
-      `<b>${slots}</b> worker slots (pal beds) ≈ base <b>Lv ${baseLevel}</b> · best pal per job you can catch at char level <b>${state.level}</b>:`));
+      `<b>${slots}</b> worker slots (pal beds) ≈ base <b>Lv ${baseLevel}</b>${raised} · best pal per job you can catch at char level <b>${state.level}</b>:`));
     pickBestForWorks(works).forEach(({ type, pal }) => {
       if (!pal) {
         body.appendChild(el("div", "pal locked", `<div class="pal-top"><span class="pal-name">${esc(type)}</span><span class="pal-catch locked">none at lvl ${state.level}</span></div>`));
