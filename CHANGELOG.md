@@ -2,17 +2,11 @@
 
 _Generated from `src/notes.js` by `npm run release`. Do not edit by hand._
 
-## v3.1.0-beta.2
+## v3.1.0
 
 - 🏭 Base worker slots now go up to 50 (was 15) — supports servers running the raised vanilla worker cap via World Settings
-- ℹ️ Slots above 15 are flagged as World-Settings-raised; base level still tops out where in-game leveling does
-- 🧪 The Beta app is now a fully separate install alongside stable PalPocket (own shortcut, settings & BETA badge)
-
-## v3.1.0-beta.1
-
-- 🧪 The Beta app is now a fully separate install — 'PalPocket Beta' sits alongside stable PalPocket with its own shortcut & settings, so you can run both at once
-- 🔖 A BETA badge in the title bar makes it obvious which window is which
-- 🔄 The Beta app always tracks the pre-release channel and won't disturb your stable install
+- ℹ️ Slots above 15 are flagged as raised-via-World-Settings; base level still tops out where in-game leveling does
+- 🧪 There's now a separate 'PalPocket Beta' app you can install alongside this one to try pre-release builds early
 
 ## v3.0.0
 
