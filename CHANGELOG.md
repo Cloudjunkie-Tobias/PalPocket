@@ -2,7 +2,7 @@
 
 _Generated from `src/notes.js` by `npm run release`. Do not edit by hand._
 
-## v3.4.0-beta.1
+## v3.4.0
 
 - 🏗️ 'How many to build' structure counts now cover every base type (Mining, Breeding, All-in-one — not just Farming)
 - 🐄 New Ranch-by-drop view on the Farming base: see every ranch product and which pals make it, at a glance
