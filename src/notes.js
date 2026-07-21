@@ -4,7 +4,7 @@
 // Newest version FIRST. Add a new key here each release (the version number
 // itself comes from package.json — don't duplicate it).
 window.PP_NOTES = {
-  "3.2.0-beta.1": [
+  "3.2.0": [
     "🌾 Farming/Ranch base: added the Venom Gland producer (Depresso) to notable pals",
     "🏗️ Key structures now show suggested build counts (how many of each to build for a maxed base) — starting with the Farming base",
     "⚡ Clarified that Electric Organ can't be ranched — noted where to actually get it",

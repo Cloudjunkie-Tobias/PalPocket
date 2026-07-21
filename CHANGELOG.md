@@ -2,7 +2,7 @@
 
 _Generated from `src/notes.js` by `npm run release`. Do not edit by hand._
 
-## v3.2.0-beta.1
+## v3.2.0
 
 - 🌾 Farming/Ranch base: added the Venom Gland producer (Depresso) to notable pals
 - 🏗️ Key structures now show suggested build counts (how many of each to build for a maxed base) — starting with the Farming base
