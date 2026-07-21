@@ -4,6 +4,9 @@
 // Newest version FIRST. Add a new key here each release (the version number
 // itself comes from package.json — don't duplicate it).
 window.PP_NOTES = {
+  "3.2.1-beta.1": [
+    "⚡ Correction: you CAN ranch Electric Organs — Sparkit produces them via its Partner Skill. Added Sparkit to the Farming base and fixed the earlier wrong tip.",
+  ],
   "3.2.0": [
     "🌾 Farming/Ranch base: added the Venom Gland producer (Depresso) to notable pals",
     "🏗️ Key structures now show suggested build counts (how many of each to build for a maxed base) — starting with the Farming base",

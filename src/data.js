@@ -60,7 +60,8 @@ window.PAL_DATA = {
       "location": "Windswept Hills",
       "tier": "starter",
       "condenseTarget": "4★ -> Electricity 5",
-      "note": "Early electric pal for your first power generator."
+      "note": "Early electric pal for your first power generator; ranch it for passive Electric Organs.",
+      "ranchDrop": "Electric Organ"
     },
     {
       "name": "Cattiva",
@@ -2134,6 +2135,10 @@ window.PAL_DATA = {
           "why": "Venom Glands on a ranch (Caprity Noct also works). Cheap early source for arrows/potions."
         },
         {
+          "name": "Sparkit",
+          "why": "Electric Organs on a ranch (Partner Skill) — passive supply without hunting Electric pals."
+        },
+        {
           "name": "Lyleen/Petallia + Jormuntide/Pengullet",
           "why": "Planting + Watering pals to auto-run crop plots."
         }
@@ -2150,7 +2155,7 @@ window.PAL_DATA = {
       ],
       "tips": [
         "Ranch capacity is limited — run several ranches, one product-type each, for clean sorting.",
-        "⚡ Electric Organ is NOT a ranch product — you can't farm it here. Get it by catching/defeating Electric pals (Sparkit, Jolthog, Grizzbolt…) or buying from a Wandering Merchant.",
+        "⚡ Ranch a Sparkit for passive Electric Organs (its Partner Skill) — no need to hunt Electric pals for them.",
         "Pick a flat, mild-climate spot (Plateau of Beginnings early, or the flatlands near Fort Ruins) so crops/pals aren't hit by heat or cold.",
         "Pair Planting + Watering + Gathering so crops auto-plant, water and harvest.",
         "A Vixy ranch is a great early income / Pal Sphere source."

@@ -2,6 +2,10 @@
 
 _Generated from `src/notes.js` by `npm run release`. Do not edit by hand._
 
+## v3.2.1-beta.1
+
+- ⚡ Correction: you CAN ranch Electric Organs — Sparkit produces them via its Partner Skill. Added Sparkit to the Farming base and fixed the earlier wrong tip.
+
 ## v3.2.0
 
 - 🌾 Farming/Ranch base: added the Venom Gland producer (Depresso) to notable pals
