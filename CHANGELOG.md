@@ -2,9 +2,9 @@
 
 _Generated from `src/notes.js` by `npm run release`. Do not edit by hand._
 
-## v3.2.1-beta.1
+## v3.3.0-beta.1
 
-- ⚡ Correction: you CAN ranch Electric Organs — Sparkit produces them via its Partner Skill. Added Sparkit to the Farming base and fixed the earlier wrong tip.
+- ⚡ You can ranch Electric Organs! Sparkit produces them via its Partner Skill — added to the Farming base's notable pals (and corrected the earlier tip).
 
 ## v3.2.0
 
