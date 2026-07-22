@@ -21,6 +21,7 @@
       </div>
       <div class="tb-btns">
         <input id="opacity" class="opacity" type="range" min="30" max="100" value="100" title="Opacity" />
+        <button id="settings-btn" class="tb-btn" title="Settings">⚙️</button>
         <button id="pin" class="tb-btn active" title="Always on top">📌</button>
         <button id="click-through" class="tb-btn" title="Click-through (Ctrl+Alt+C)">🖱️</button>
         <button id="min" class="tb-btn" title="Minimize">—</button>
@@ -109,18 +110,6 @@
           <summary>General base facts (capacity, condenser)</summary>
           <div id="base-out"></div>
         </details>
-        <div class="startup-row">
-          <label><input id="startup" type="checkbox" /> Launch on Windows startup</label>
-        </div>
-        <div class="startup-row">
-          <label title="Receive pre-release (beta) builds before they ship to everyone"><input id="beta-updates" type="checkbox" /> Get beta updates (early/test builds)</label>
-        </div>
-        <div class="hotkeys">
-          <div><b>Hotkeys</b></div>
-          <div><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>N</kbd> show / hide overlay</div>
-          <div><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>C</kbd> toggle click-through</div>
-        </div>
-        <div class="about-row">PalPocket <span id="ver"></span> · <button id="whatsnew" class="link-btn">What's new</button></div>
       </section>
 
       <section id="tab-breeding" class="tabpanel">
@@ -160,6 +149,36 @@
         <div id="passives-out"></div>
       </section>
     </main>
+
+    <!-- Settings panel (opened by the ⚙️ title-bar button) -->
+    <div id="settings-modal" class="modal hidden">
+      <div class="modal-card settings-card">
+        <div class="modal-title">⚙️ Settings</div>
+
+        <div class="set-group">
+          <label class="set-row"><input id="startup" type="checkbox" /> <span>Launch on Windows startup</span></label>
+          <label class="set-row" title="Receive pre-release (beta) builds before they ship to everyone"><input id="beta-updates" type="checkbox" /> <span>Get beta updates (early/test builds)</span></label>
+        </div>
+
+        <div class="set-group">
+          <div class="set-h">Show / hide tabs</div>
+          <div class="set-sub">Uncheck a tab to hide it from the bar. At least one stays visible.</div>
+          <div id="tab-visibility" class="tab-visibility"></div>
+        </div>
+
+        <div class="set-group hotkeys">
+          <div class="set-h">Hotkeys</div>
+          <div><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>N</kbd> show / hide overlay</div>
+          <div><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>C</kbd> toggle click-through</div>
+        </div>
+
+        <div class="about-row">PalPocket <span id="ver"></span> · <button id="whatsnew" class="link-btn">What's new</button></div>
+
+        <div class="modal-actions">
+          <button id="settings-close" class="map-btn">Close</button>
+        </div>
+      </div>
+    </div>
   </div>
   <script src="data.js"></script>
   <script src="notes.js"></script>

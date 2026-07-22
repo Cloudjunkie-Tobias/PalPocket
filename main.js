@@ -79,9 +79,11 @@ function createWindow() {
   });
 
   // Restore opacity + pin from saved state.
-  clickThrough = !!uiState.clickThrough;
+  // Always start INTERACTIVE: restoring click-through on launch can lock the user out of
+  // the UI (e.g. an unclickable What's New popup). It's a per-session toggle (Ctrl+Alt+C).
+  clickThrough = false;
+  uiState.clickThrough = false;
   win.setOpacity(Math.max(0.15, Math.min(1, uiState.opacity || 1)));
-  if (clickThrough) win.setIgnoreMouseEvents(true, { forward: true });
 
   // Keep above fullscreen-borderless games.
   win.setAlwaysOnTop(!!uiState.pinned, 'screen-saver');

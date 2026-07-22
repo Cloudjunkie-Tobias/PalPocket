@@ -885,6 +885,59 @@ function maybeShowWhatsNew() {
   else if (last !== APP_VERSION && (releaseNotes()[APP_VERSION] || []).length) showWhatsNew("update");
 }
 
+// ---- Settings panel + tab show/hide ----
+const LS_TABS = "palpocket.hiddenTabs";
+let hiddenTabs = new Set();
+function loadHiddenTabs() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(LS_TABS));
+    hiddenTabs = new Set(Array.isArray(raw) ? raw : []);
+  } catch (e) { hiddenTabs = new Set(); }
+}
+function saveHiddenTabs() {
+  try { localStorage.setItem(LS_TABS, JSON.stringify([...hiddenTabs])); } catch (e) {}
+}
+function allTabButtons() {
+  return [...document.querySelectorAll(".tabs .tab")].map(b => ({ id: b.dataset.tab, label: b.textContent.trim(), btn: b }));
+}
+function applyTabVisibility() {
+  const tabs = allTabButtons();
+  tabs.forEach(t => t.btn.classList.toggle("hidden", hiddenTabs.has(t.id)));
+  // If the active tab just got hidden, jump to the first visible one.
+  const active = document.querySelector(".tabs .tab.active");
+  if (active && hiddenTabs.has(active.dataset.tab)) {
+    const firstVisible = tabs.find(t => !hiddenTabs.has(t.id));
+    if (firstVisible) switchTab(firstVisible.id);
+  }
+}
+function buildTabVisibility() {
+  const host = $("tab-visibility");
+  if (!host) return;
+  host.innerHTML = "";
+  allTabButtons().forEach(t => {
+    const row = el("label", "tabvis-row");
+    const cb = el("input"); cb.type = "checkbox"; cb.checked = !hiddenTabs.has(t.id);
+    cb.addEventListener("change", () => {
+      if (!cb.checked) {
+        // Guardrail: never hide the last remaining visible tab.
+        const visibleCount = allTabButtons().filter(x => !hiddenTabs.has(x.id)).length;
+        if (visibleCount <= 1) { cb.checked = true; return; }
+        hiddenTabs.add(t.id);
+      } else {
+        hiddenTabs.delete(t.id);
+      }
+      saveHiddenTabs();
+      applyTabVisibility();
+    });
+    row.appendChild(cb);
+    row.appendChild(el("span", null, esc(t.label)));
+    host.appendChild(row);
+  });
+}
+function openSettings() { buildTabVisibility(); const m = $("settings-modal"); if (m) m.classList.remove("hidden"); }
+function closeSettings() { const m = $("settings-modal"); if (m) m.classList.add("hidden"); }
+function settingsOpen() { const m = $("settings-modal"); return m && !m.classList.contains("hidden"); }
+
 // ---- Quick search ----
 let _searchIndex = null;
 function searchIndex() {
@@ -1130,12 +1183,20 @@ function init() {
   $("search").addEventListener("blur", () => setTimeout(() => { const b = $("search-results"); if (b) b.classList.add("hidden"); }, 150));
   document.addEventListener("keydown", e => {
     if (e.key !== "Escape") return;
+    if (settingsOpen()) { closeSettings(); return; }
     // If the open modal is the What's New popup, persist the dismissal so it doesn't reappear next launch.
     const m = $("pal-modal");
     if (m && m.dataset.whatsnew === "1") dismissWhatsNew(m);
     else closePalModal();
     const b = $("search-results"); if (b) b.classList.add("hidden");
   });
+
+  // Settings panel (⚙️ title-bar button)
+  const setBtn = $("settings-btn"); if (setBtn) setBtn.addEventListener("click", openSettings);
+  const setClose = $("settings-close"); if (setClose) setClose.addEventListener("click", closeSettings);
+  const setModal = $("settings-modal");
+  if (setModal) setModal.addEventListener("click", e => { if (e.target === setModal) closeSettings(); });
+  loadHiddenTabs();
 
   startClock();
   const wn = $("whatsnew"); if (wn) wn.addEventListener("click", () => showWhatsNew("manual"));
@@ -1145,6 +1206,7 @@ function init() {
   fillBylevelFilter();
   fillBreedSelects();
   setLevel(state.level);
+  applyTabVisibility(); // after initial setup, so a hidden active tab can safely switch
 
   // Overlay window controls (no-op when opened in a plain browser).
   if (hasOverlay) {
