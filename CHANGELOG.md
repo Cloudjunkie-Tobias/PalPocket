@@ -2,6 +2,12 @@
 
 _Generated from `src/notes.js` by `npm run release`. Do not edit by hand._
 
+## v3.6.0
+
+- ⌨️ Custom hotkeys! Rebind show/hide and click-through in ⚙️ Settings — click a shortcut and press your combo (Ctrl+Alt+N / Ctrl+Alt+C stay the defaults)
+- ↻ Reset any hotkey to its default; if a combo's already taken, it says so and keeps the old one
+- 📜 New 'Full changelog' link in Settings — see every version's notes on GitHub
+
 ## v3.5.0
 
 - ⚙️ New Settings panel — click the gear in the title bar for Windows-startup, the Beta app, hotkeys & more

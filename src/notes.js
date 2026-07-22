@@ -4,7 +4,7 @@
 // Newest version FIRST. Add a new key here each release (the version number
 // itself comes from package.json — don't duplicate it).
 window.PP_NOTES = {
-  "3.6.0-beta.1": [
+  "3.6.0": [
     "⌨️ Custom hotkeys! Rebind show/hide and click-through in ⚙️ Settings — click a shortcut and press your combo (Ctrl+Alt+N / Ctrl+Alt+C stay the defaults)",
     "↻ Reset any hotkey to its default; if a combo's already taken, it says so and keeps the old one",
     "📜 New 'Full changelog' link in Settings — see every version's notes on GitHub",
