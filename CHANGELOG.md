@@ -2,6 +2,13 @@
 
 _Generated from `src/notes.js` by `npm run release`. Do not edit by hand._
 
+## v4.0.1
+
+- 🖱️ Click-through is now obvious: when it's on, the overlay shows a highlighted border + a reminder that Ctrl+Alt+C turns it back off — no more 'is it frozen?' moments.
+- 📑 The tab bar is now a single scrollable row instead of wrapping onto two — more room for the actual content.
+- 🔤 Bumped up the smallest text for easier reading.
+- 🏷️ The version number now sits neatly at the bottom of the Settings panel.
+
 ## v4.0.0
 
 - 👋 New here? A one-time welcome tip now explains how to run PalPocket as an overlay (borderless-windowed + the Ctrl+Alt+N / Ctrl+Alt+C hotkeys).
