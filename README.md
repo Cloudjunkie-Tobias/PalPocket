@@ -49,8 +49,9 @@ Requires Node.js 18+ on Windows. `npm run dist` produces `dist/PalPocket-Setup-<
 All game data lives in [`src/data.js`](src/data.js) (`window.PAL_DATA`): pals, mounts, base types, breeding ranks/combos, tech levels, passives. Edit freely — `npm start` picks changes up immediately; re-run `npm run dist` to bake them into the executables.
 
 Data conventions:
+
 - **Snapshot** of Palworld **1.0 + Feybreak** (verified 2026-07-20), sourced from paldb.cc and cross-checked against palworld.wiki.gg / game8; breeding validated against extracted game data.
-- **catchLevel** = lowest *wild free-roaming* spawn — dungeon/cave spawns and alpha/named bosses excluded; where no plain wild spawn exists, the open-world field-boss level is used.
+- **catchLevel** = lowest _wild free-roaming_ spawn — dungeon/cave spawns and alpha/named bosses excluded; where no plain wild spawn exists, the open-world field-boss level is used.
 - Work suitabilities use the 1.0/Feybreak scale (max 8).
 
 ## License

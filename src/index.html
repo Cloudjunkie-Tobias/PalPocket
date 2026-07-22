@@ -1,211 +1,238 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- Lock the renderer to local resources. Scripts are 'self' only (no inline/eval);
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Lock the renderer to local resources. Scripts are 'self' only (no inline/eval);
        'unsafe-inline' is scoped to styles because a few width bars use inline style attrs.
        External links open in the OS browser via the main process, never in-page. -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
-  <title>PalPocket</title>
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
-  <div id="app">
-    <header id="titlebar">
-      <div class="tb-drag">
-        <img class="logo" src="logo.png" alt="" draggable="false" /><span class="title">PalPocket</span>
-        <span id="beta-flag" class="seed-flag beta-flag hidden" title="Beta build — separate from the stable app">BETA</span>
-        <span id="seed-flag" class="seed-flag" title="Using placeholder data">seed</span>
-        <span id="clock" class="clock" title="Your local time"></span>
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'"
+    />
+    <title>PalPocket</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="app">
+      <header id="titlebar">
+        <div class="tb-drag">
+          <img class="logo" src="logo.png" alt="" draggable="false" /><span class="title">PalPocket</span>
+          <span id="beta-flag" class="seed-flag beta-flag hidden" title="Beta build — separate from the stable app"
+            >BETA</span
+          >
+          <span id="seed-flag" class="seed-flag" title="Using placeholder data">seed</span>
+          <span id="clock" class="clock" title="Your local time"></span>
+        </div>
+        <div class="tb-btns">
+          <input id="opacity" class="opacity" type="range" min="30" max="100" value="100" title="Opacity" />
+          <button id="settings-btn" class="tb-btn" title="Settings">⚙️</button>
+          <button id="pin" class="tb-btn active" title="Always on top">📌</button>
+          <button id="click-through" class="tb-btn" title="Click-through (Ctrl+Alt+C)">🖱️</button>
+          <button id="min" class="tb-btn" title="Minimize">—</button>
+          <button id="close" class="tb-btn close" title="Close">✕</button>
+        </div>
+      </header>
+
+      <div class="levelbar">
+        <label>My level</label>
+        <input id="level" type="range" min="1" max="70" value="15" />
+        <input id="level-num" type="number" min="1" max="70" value="15" />
       </div>
-      <div class="tb-btns">
-        <input id="opacity" class="opacity" type="range" min="30" max="100" value="100" title="Opacity" />
-        <button id="settings-btn" class="tb-btn" title="Settings">⚙️</button>
-        <button id="pin" class="tb-btn active" title="Always on top">📌</button>
-        <button id="click-through" class="tb-btn" title="Click-through (Ctrl+Alt+C)">🖱️</button>
-        <button id="min" class="tb-btn" title="Minimize">—</button>
-        <button id="close" class="tb-btn close" title="Close">✕</button>
+
+      <div class="searchbar">
+        <input id="search" type="text" placeholder="🔍 Search any pal…" autocomplete="off" />
+        <div id="search-results" class="search-results hidden"></div>
       </div>
-    </header>
 
-    <div class="levelbar">
-      <label>My level</label>
-      <input id="level" type="range" min="1" max="70" value="15" />
-      <input id="level-num" type="number" min="1" max="70" value="15" />
-    </div>
+      <nav class="tabs">
+        <button class="tab active" data-tab="planner">Planner</button>
+        <button class="tab" data-tab="bylevel">By Level</button>
+        <button class="tab" data-tab="ladders">Ladders</button>
+        <button class="tab" data-tab="mounts">Mounts</button>
+        <button class="tab" data-tab="bosses">Bosses</button>
+        <button class="tab" data-tab="base">Bases</button>
+        <button class="tab" data-tab="breeding">Breeding</button>
+        <button class="tab" data-tab="guide">Guide</button>
+        <button class="tab" data-tab="passives">Passives</button>
+      </nav>
 
-    <div class="searchbar">
-      <input id="search" type="text" placeholder="🔍 Search any pal…" autocomplete="off" />
-      <div id="search-results" class="search-results hidden"></div>
-    </div>
-
-    <nav class="tabs">
-      <button class="tab active" data-tab="planner">Planner</button>
-      <button class="tab" data-tab="bylevel">By Level</button>
-      <button class="tab" data-tab="ladders">Ladders</button>
-      <button class="tab" data-tab="mounts">Mounts</button>
-      <button class="tab" data-tab="bosses">Bosses</button>
-      <button class="tab" data-tab="base">Bases</button>
-      <button class="tab" data-tab="breeding">Breeding</button>
-      <button class="tab" data-tab="guide">Guide</button>
-      <button class="tab" data-tab="passives">Passives</button>
-    </nav>
-
-    <main id="content">
-      <section id="tab-planner" class="tabpanel active">
-        <div class="planner-controls">
-          <div class="slots">
-            <label>Base slots</label>
-            <input id="slots" type="number" min="1" max="50" value="15" />
+      <main id="content">
+        <section id="tab-planner" class="tabpanel active">
+          <div class="planner-controls">
+            <div class="slots">
+              <label>Base slots</label>
+              <input id="slots" type="number" min="1" max="50" value="15" />
+            </div>
+            <div class="hint">Pick the work you need in this base:</div>
+            <div id="suit-picker" class="suit-picker"></div>
           </div>
-          <div class="hint">Pick the work you need in this base:</div>
-          <div id="suit-picker" class="suit-picker"></div>
-        </div>
-        <div id="planner-out"></div>
-      </section>
+          <div id="planner-out"></div>
+        </section>
 
-      <section id="tab-bylevel" class="tabpanel">
-        <div class="filter-row">
-          <select id="bylevel-filter"><option value="">All suitabilities</option></select>
-        </div>
-        <div id="bylevel-out"></div>
-      </section>
-
-      <section id="tab-ladders" class="tabpanel">
-        <div id="ladders-out"></div>
-      </section>
-
-      <section id="tab-mounts" class="tabpanel">
-        <div class="filter-row">
-          <select id="mounts-filter">
-            <option value="">All terrain</option>
-            <option value="Ground">🏃 Ground</option>
-            <option value="Water">🌊 Water</option>
-            <option value="Flying">🪽 Flying</option>
-          </select>
-          <label class="avail-toggle" title="Only show mounts you can get at your level"><input id="mounts-avail" type="checkbox" /> only mine</label>
-        </div>
-        <div id="mounts-out"></div>
-      </section>
-
-      <section id="tab-bosses" class="tabpanel">
-        <div class="filter-row">
-          <select id="bosses-filter">
-            <option value="">All bosses</option>
-            <option value="tower">🗼 Towers only</option>
-            <option value="alpha">💀 Alphas only</option>
-          </select>
-          <label class="avail-toggle" title="Hide bosses you've already beaten"><input id="bosses-hidedone" type="checkbox" /> hide done</label>
-        </div>
-        <div id="bosses-progress" class="boss-progress"></div>
-        <div id="bosses-out"></div>
-      </section>
-
-      <section id="tab-base" class="tabpanel">
-        <div class="hint">Pick a base to plan &amp; level:</div>
-        <div id="btype-picker" class="btype-picker"></div>
-        <div id="btype-detail"></div>
-        <details class="fold">
-          <summary>General base facts (capacity, condenser)</summary>
-          <div id="base-out"></div>
-        </details>
-      </section>
-
-      <section id="tab-breeding" class="tabpanel">
-        <div class="breed-find">
-          <div class="hint">🔎 How to breed a pal — pick a target:</div>
-          <select id="breed-target"><option value="">Target pal…</option></select>
-          <div id="breed-path" class="breed-path"></div>
-        </div>
-        <div class="breed-calc">
-          <div class="hint">Breeding calculator — pick two parents:</div>
-          <div class="breed-parents">
-            <select id="breed-a"><option value="">Parent A</option></select>
-            <span class="breed-plus">+</span>
-            <select id="breed-b"><option value="">Parent B</option></select>
+        <section id="tab-bylevel" class="tabpanel">
+          <div class="filter-row">
+            <select id="bylevel-filter">
+              <option value="">All suitabilities</option>
+            </select>
           </div>
-          <div id="breed-result" class="breed-result"></div>
-        </div>
-        <div id="breeding-out"></div>
-      </section>
+          <div id="bylevel-out"></div>
+        </section>
 
-      <section id="tab-guide" class="tabpanel">
-        <div class="hint">A suggested order for building your bases as you progress (default 4-base setup):</div>
-        <div id="guide-out"></div>
-      </section>
+        <section id="tab-ladders" class="tabpanel">
+          <div id="ladders-out"></div>
+        </section>
 
-      <section id="tab-passives" class="tabpanel">
-        <div class="filter-row">
-          <select id="passives-filter">
-            <option value="">All passives</option>
-            <option value="Combat">⚔️ Combat</option>
-            <option value="Movement">🏃 Movement / mount</option>
-            <option value="Work">🔨 Work / base</option>
-            <option value="Defense">🛡️ Defense</option>
-            <option value="Negative">⚠️ Negative (breed out)</option>
-          </select>
-        </div>
-        <div id="passives-out"></div>
-      </section>
-    </main>
-
-    <!-- Settings panel (opened by the ⚙️ title-bar button) -->
-    <div id="settings-modal" class="modal hidden">
-      <div class="modal-card settings-card">
-        <div class="modal-title">⚙️ Settings</div>
-
-        <div class="set-group">
-          <label class="set-row"><input id="startup" type="checkbox" /> <span>Launch on Windows startup</span></label>
-        </div>
-
-        <div class="set-group" id="beta-group">
-          <div class="set-h">Beta builds</div>
-          <div id="beta-get" class="hidden">
-            <div class="set-sub">Want features early? Install the separate <b>PalPocket Beta</b> app — it runs alongside this one and updates itself with pre-releases. Your stable app is unaffected.</div>
-            <button id="get-beta" class="link-btn">↗ Get PalPocket Beta (opens GitHub)</button>
+        <section id="tab-mounts" class="tabpanel">
+          <div class="filter-row">
+            <select id="mounts-filter">
+              <option value="">All terrain</option>
+              <option value="Ground">🏃 Ground</option>
+              <option value="Water">🌊 Water</option>
+              <option value="Flying">🪽 Flying</option>
+            </select>
+            <label class="avail-toggle" title="Only show mounts you can get at your level"
+              ><input id="mounts-avail" type="checkbox" /> only mine</label
+            >
           </div>
-          <div id="beta-current" class="set-sub hidden">🧪 You're running <b>PalPocket Beta</b> — you automatically receive pre-release builds.</div>
-        </div>
+          <div id="mounts-out"></div>
+        </section>
 
-        <div class="set-group">
-          <div class="set-h">Show / hide tabs</div>
-          <div class="set-sub">Uncheck a tab to hide it from the bar. At least one stays visible.</div>
-          <div id="tab-visibility" class="tab-visibility"></div>
-        </div>
-
-        <div class="set-group">
-          <div class="set-h">Feedback</div>
-          <div class="set-sub">Found a bug or have an idea? Let me know on GitHub — it takes a minute.</div>
-          <button id="feedback-btn" class="link-btn">💬 Report a bug / request a feature</button>
-        </div>
-
-        <div class="set-group">
-          <div class="set-h">Hotkeys</div>
-          <div class="set-sub">Click a shortcut, then press your combo (needs Ctrl / Alt / Shift + a key). Esc cancels.</div>
-          <div class="hotkey-row">
-            <span class="hotkey-label">Show / hide overlay</span>
-            <button class="hotkey-cap" id="hk-show" data-action="show"></button>
-            <button class="hotkey-reset" data-action="show" title="Reset to default">↺</button>
+        <section id="tab-bosses" class="tabpanel">
+          <div class="filter-row">
+            <select id="bosses-filter">
+              <option value="">All bosses</option>
+              <option value="tower">🗼 Towers only</option>
+              <option value="alpha">💀 Alphas only</option>
+            </select>
+            <label class="avail-toggle" title="Hide bosses you've already beaten"
+              ><input id="bosses-hidedone" type="checkbox" /> hide done</label
+            >
           </div>
-          <div class="hotkey-row">
-            <span class="hotkey-label">Toggle click-through</span>
-            <button class="hotkey-cap" id="hk-clickThrough" data-action="clickThrough"></button>
-            <button class="hotkey-reset" data-action="clickThrough" title="Reset to default">↺</button>
+          <div id="bosses-progress" class="boss-progress"></div>
+          <div id="bosses-out"></div>
+        </section>
+
+        <section id="tab-base" class="tabpanel">
+          <div class="hint">Pick a base to plan &amp; level:</div>
+          <div id="btype-picker" class="btype-picker"></div>
+          <div id="btype-detail"></div>
+          <details class="fold">
+            <summary>General base facts (capacity, condenser)</summary>
+            <div id="base-out"></div>
+          </details>
+        </section>
+
+        <section id="tab-breeding" class="tabpanel">
+          <div class="breed-find">
+            <div class="hint">🔎 How to breed a pal — pick a target:</div>
+            <select id="breed-target">
+              <option value="">Target pal…</option>
+            </select>
+            <div id="breed-path" class="breed-path"></div>
           </div>
-          <div id="hotkey-msg" class="hotkey-msg hidden"></div>
-        </div>
+          <div class="breed-calc">
+            <div class="hint">Breeding calculator — pick two parents:</div>
+            <div class="breed-parents">
+              <select id="breed-a">
+                <option value="">Parent A</option>
+              </select>
+              <span class="breed-plus">+</span>
+              <select id="breed-b">
+                <option value="">Parent B</option>
+              </select>
+            </div>
+            <div id="breed-result" class="breed-result"></div>
+          </div>
+          <div id="breeding-out"></div>
+        </section>
 
-        <div class="about-row">PalPocket <span id="ver"></span> · <button id="whatsnew" class="link-btn">What's new</button> · <button id="full-changelog" class="link-btn">Full changelog</button></div>
+        <section id="tab-guide" class="tabpanel">
+          <div class="hint">A suggested order for building your bases as you progress (default 4-base setup):</div>
+          <div id="guide-out"></div>
+        </section>
 
-        <div class="modal-actions">
-          <button id="settings-close" class="map-btn">Close</button>
+        <section id="tab-passives" class="tabpanel">
+          <div class="filter-row">
+            <select id="passives-filter">
+              <option value="">All passives</option>
+              <option value="Combat">⚔️ Combat</option>
+              <option value="Movement">🏃 Movement / mount</option>
+              <option value="Work">🔨 Work / base</option>
+              <option value="Defense">🛡️ Defense</option>
+              <option value="Negative">⚠️ Negative (breed out)</option>
+            </select>
+          </div>
+          <div id="passives-out"></div>
+        </section>
+      </main>
+
+      <!-- Settings panel (opened by the ⚙️ title-bar button) -->
+      <div id="settings-modal" class="modal hidden">
+        <div class="modal-card settings-card">
+          <div class="modal-title">⚙️ Settings</div>
+
+          <div class="set-group">
+            <label class="set-row"><input id="startup" type="checkbox" /> <span>Launch on Windows startup</span></label>
+          </div>
+
+          <div class="set-group" id="beta-group">
+            <div class="set-h">Beta builds</div>
+            <div id="beta-get" class="hidden">
+              <div class="set-sub">
+                Want features early? Install the separate <b>PalPocket Beta</b> app — it runs alongside this one and
+                updates itself with pre-releases. Your stable app is unaffected.
+              </div>
+              <button id="get-beta" class="link-btn">↗ Get PalPocket Beta (opens GitHub)</button>
+            </div>
+            <div id="beta-current" class="set-sub hidden">
+              🧪 You're running <b>PalPocket Beta</b> — you automatically receive pre-release builds.
+            </div>
+          </div>
+
+          <div class="set-group">
+            <div class="set-h">Show / hide tabs</div>
+            <div class="set-sub">Uncheck a tab to hide it from the bar. At least one stays visible.</div>
+            <div id="tab-visibility" class="tab-visibility"></div>
+          </div>
+
+          <div class="set-group">
+            <div class="set-h">Feedback</div>
+            <div class="set-sub">Found a bug or have an idea? Let me know on GitHub — it takes a minute.</div>
+            <button id="feedback-btn" class="link-btn">💬 Report a bug / request a feature</button>
+          </div>
+
+          <div class="set-group">
+            <div class="set-h">Hotkeys</div>
+            <div class="set-sub">
+              Click a shortcut, then press your combo (needs Ctrl / Alt / Shift + a key). Esc cancels.
+            </div>
+            <div class="hotkey-row">
+              <span class="hotkey-label">Show / hide overlay</span>
+              <button class="hotkey-cap" id="hk-show" data-action="show"></button>
+              <button class="hotkey-reset" data-action="show" title="Reset to default">↺</button>
+            </div>
+            <div class="hotkey-row">
+              <span class="hotkey-label">Toggle click-through</span>
+              <button class="hotkey-cap" id="hk-clickThrough" data-action="clickThrough"></button>
+              <button class="hotkey-reset" data-action="clickThrough" title="Reset to default">↺</button>
+            </div>
+            <div id="hotkey-msg" class="hotkey-msg hidden"></div>
+          </div>
+
+          <div class="about-row">
+            PalPocket <span id="ver"></span> · <button id="whatsnew" class="link-btn">What's new</button> ·
+            <button id="full-changelog" class="link-btn">Full changelog</button>
+          </div>
+
+          <div class="modal-actions">
+            <button id="settings-close" class="map-btn">Close</button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <script src="data.js"></script>
-  <script src="notes.js"></script>
-  <script src="app.js"></script>
-</body>
+    <script src="data.js"></script>
+    <script src="notes.js"></script>
+    <script src="app.js"></script>
+  </body>
 </html>
