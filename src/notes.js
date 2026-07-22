@@ -11,6 +11,7 @@ window.PP_NOTES = {
     "💾 Your window position & settings now always save when you close — no more losing a just-moved overlay",
     "🖱️ The overlay always starts clickable now (click-through is a per-session toggle: Ctrl+Alt+C)",
     "🔒 Reliability: only one copy runs at a time, a heads-up if a hotkey's already taken, and tighter update/security handling",
+    "💬 New Feedback button in Settings — report bugs & request features straight from the app",
   ],
   "3.4.0": [
     "🏗️ 'How many to build' structure counts now cover every base type (Mining, Breeding, All-in-one — not just Farming)",

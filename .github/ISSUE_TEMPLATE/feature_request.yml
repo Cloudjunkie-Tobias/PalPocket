@@ -1,0 +1,22 @@
+name: 💡 Feature request
+description: Suggest something PalPocket should do
+title: "[Idea]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: Got an idea for PalPocket? Tell me about it!
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would you like?
+      description: Describe the feature or improvement — and why it'd help.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Anything else?
+      description: Examples, screenshots, or how you'd use it (optional).
+    validations:
+      required: false

@@ -1196,12 +1196,14 @@ function init() {
   const setClose = $("settings-close"); if (setClose) setClose.addEventListener("click", closeSettings);
   const setModal = $("settings-modal");
   if (setModal) setModal.addEventListener("click", e => { if (e.target === setModal) closeSettings(); });
-  const getBeta = $("get-beta");
-  if (getBeta) getBeta.addEventListener("click", () => {
-    const url = "https://github.com/Cloudjunkie-Tobias/PalPocket/releases";
+  const openExt = (url) => {
     if (hasOverlay && window.overlay.openExternal) window.overlay.openExternal(url);
     else window.open(url, "_blank", "noopener");
-  });
+  };
+  const getBeta = $("get-beta");
+  if (getBeta) getBeta.addEventListener("click", () => openExt("https://github.com/Cloudjunkie-Tobias/PalPocket/releases"));
+  const feedback = $("feedback-btn");
+  if (feedback) feedback.addEventListener("click", () => openExt("https://github.com/Cloudjunkie-Tobias/PalPocket/issues/new/choose"));
   loadHiddenTabs();
 
   startClock();
