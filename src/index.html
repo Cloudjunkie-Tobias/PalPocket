@@ -15,6 +15,8 @@
   </head>
   <body>
     <div id="app">
+      <!-- Shown (via body.ct-active) only while click-through is on, so the overlay never looks frozen. -->
+      <div id="ct-indicator" class="ct-indicator" role="status">🖱️ Click-through on — press Ctrl+Alt+C to interact</div>
       <header id="titlebar">
         <div class="tb-drag">
           <img class="logo" src="logo.png" alt="" draggable="false" /><span class="title">PalPocket</span>

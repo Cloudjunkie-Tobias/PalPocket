@@ -4,6 +4,11 @@
 // Newest version FIRST. Add a new key here each release (the version number
 // itself comes from package.json — don't duplicate it).
 window.PP_NOTES = {
+  "4.0.1-beta.1": [
+    "🖱️ Click-through is now obvious: when it's on, the overlay shows a highlighted border + a reminder that Ctrl+Alt+C turns it back off — no more 'is it frozen?' moments.",
+    "📑 The tab bar is now a single scrollable row instead of wrapping onto two — more room for the actual content.",
+    "🔤 Bumped up the smallest text for easier reading.",
+  ],
   "4.0.0": [
     "👋 New here? A one-time welcome tip now explains how to run PalPocket as an overlay (borderless-windowed + the Ctrl+Alt+N / Ctrl+Alt+C hotkeys).",
     "♿ Accessibility pass: the tab bar is keyboard-navigable (arrow keys), with clear focus outlines and proper screen-reader roles throughout.",

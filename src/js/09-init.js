@@ -157,10 +157,19 @@ function init() {
   if (hasOverlay) {
     $("opacity").addEventListener("input", (e) => window.overlay.setOpacity(e.target.value / 100));
     let ct = false;
+    // Reflect click-through state everywhere: the button, and a whole-overlay cue (border + hint
+    // pill) so it's obvious the app is passing clicks through — not frozen. In click-through mode
+    // the pill can't be clicked (that's the point); Ctrl+Alt+C is the way back.
+    const reflectClickThrough = (v) => {
+      ct = v;
+      const btn = $("click-through");
+      btn.classList.toggle("active", v);
+      btn.setAttribute("aria-pressed", v ? "true" : "false");
+      document.body.classList.toggle("ct-active", v);
+    };
     $("click-through").addEventListener("click", () => {
-      ct = !ct;
+      reflectClickThrough(!ct);
       window.overlay.setClickThrough(ct);
-      $("click-through").classList.toggle("active", ct);
     });
     let pinned = true;
     $("pin").addEventListener("click", () => {
@@ -170,10 +179,7 @@ function init() {
     });
     $("min").addEventListener("click", () => window.overlay.minimize());
     $("close").addEventListener("click", () => window.overlay.close());
-    window.overlay.onClickThroughChanged((v) => {
-      ct = v;
-      $("click-through").classList.toggle("active", v);
-    });
+    window.overlay.onClickThroughChanged((v) => reflectClickThrough(v));
     if (window.overlay.onUpdateReady) {
       window.overlay.onUpdateReady((version) => {
         if ($("update-pill")) return;

@@ -8,6 +8,8 @@ function switchTab(name) {
     t.classList.toggle("active", on);
     t.setAttribute("aria-selected", on ? "true" : "false");
     t.tabIndex = on ? 0 : -1; // roving tabindex: only the active tab is in the tab order
+    // Tab bar is a single scrollable row now — keep the active tab visible.
+    if (on && t.scrollIntoView) t.scrollIntoView({ block: "nearest", inline: "nearest" });
   });
   document.querySelectorAll(".tabpanel").forEach((p) => p.classList.toggle("active", p.id === "tab-" + name));
   if (name === "planner") renderPlanner();
