@@ -45,6 +45,33 @@ function flushState() {
   writeStateNow();
 }
 
+// Is the OTHER PalPocket app (stable ↔ Beta) currently running? Used to decide whether a
+// failed hotkey registration is worth warning about (a sibling holding it is expected/harmless).
+// Matches by the packaged exe names; our own dev process ("electron.exe") never matches, and
+// unrelated Electron apps (VS Code, etc.) are ignored because they aren't PalPocket*.exe.
+function detectSiblingPalPocket(cb) {
+  if (process.platform !== 'win32') return cb(false);
+  let done = false;
+  const finish = (v) => { if (!done) { done = true; cb(v); } };
+  try {
+    const { execFile } = require('child_process');
+    const myExe = path.basename(process.execPath).toLowerCase();
+    const family = ['palpocket.exe', 'palpocket beta.exe'];
+    execFile('tasklist', ['/FO', 'CSV', '/NH'], { windowsHide: true }, (err, stdout) => {
+      if (err || !stdout) return finish(false);
+      const sibling = stdout.split(/\r?\n/).some((line) => {
+        const m = line.match(/^"([^"]+)"/);
+        if (!m) return false;
+        const img = m[1].toLowerCase();
+        return family.includes(img) && img !== myExe;
+      });
+      finish(sibling);
+    });
+    // Never let a slow/hung tasklist stall the hint — assume no sibling after 1.5s.
+    setTimeout(() => finish(false), 1500);
+  } catch (e) { finish(false); }
+}
+
 // Only reuse saved bounds if they still land on a currently-connected display (monitor unplugged / resolution change).
 function boundsVisible(b) {
   if (!b || typeof b.x !== 'number') return false;
@@ -145,13 +172,19 @@ app.whenReady().then(() => {
   loadState();
   createWindow();
 
-  // globalShortcut.register returns false if another app already holds the accelerator
-  // (e.g. running stable + Beta at once). Tell the renderer so it can hint the user.
+  // globalShortcut.register returns false if another app already holds the accelerator.
   const okShow = globalShortcut.register('Control+Alt+N', toggleShow);
   const okClick = globalShortcut.register('Control+Alt+C', toggleClickThrough);
   if (!okShow || !okClick) {
-    const notify = () => { if (win) win.webContents.send('hotkeys-unavailable', { show: okShow, clickThrough: okClick }); };
-    if (win) win.webContents.on('did-finish-load', notify);
+    // The common cause is our OWN sibling (PalPocket ↔ PalPocket Beta) running at the same
+    // time — that's expected and harmless, so stay quiet. Only warn when something ELSE grabbed
+    // the hotkeys, which the user can't infer without a hint.
+    detectSiblingPalPocket((siblingRunning) => {
+      if (siblingRunning) return;
+      const notify = () => { if (win) win.webContents.send('hotkeys-unavailable', { show: okShow, clickThrough: okClick }); };
+      if (win && win.webContents.isLoading()) win.webContents.once('did-finish-load', notify);
+      else notify();
+    });
   }
 
   ipcMain.on('set-opacity', (_e, value) => {
