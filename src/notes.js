@@ -4,6 +4,10 @@
 // Newest version FIRST. Add a new key here each release (the version number
 // itself comes from package.json — don't duplicate it).
 window.PP_NOTES = {
+  "3.7.0-beta.1": [
+    "🔧 Under the hood: the release pipeline now runs automatic data-integrity checks — a broken breeding reference, a mistyped work type, or a misspelled pal name (which would break a map link) can no longer ship.",
+    "🧹 Added code linting (ESLint) + formatting (Prettier) to keep the project clean as it grows. No visible changes — quality groundwork.",
+  ],
   "3.6.0": [
     "⌨️ Custom hotkeys! Rebind show/hide and click-through in ⚙️ Settings — click a shortcut and press your combo (Ctrl+Alt+N / Ctrl+Alt+C stay the defaults)",
     "↻ Reset any hotkey to its default; if a combo's already taken, it says so and keeps the old one",

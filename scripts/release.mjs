@@ -22,9 +22,23 @@ if (betaApp && !isPrerelease) {
   process.exit(1);
 }
 if (isPrerelease && !betaApp && !changelogOnly) {
-  console.error(`✗ ${version} is a pre-release — publish it with \`npm run release:beta\` (--beta), not \`npm run release\`.\n` +
-    `  Running the stable release on a -beta version would ship a beta build on the stable channel.`);
+  console.error(
+    `✗ ${version} is a pre-release — publish it with \`npm run release:beta\` (--beta), not \`npm run release\`.\n` +
+      `  Running the stable release on a -beta version would ship a beta build on the stable channel.`
+  );
   process.exit(1);
+}
+
+// --- data integrity gate ---
+// The dataset IS the product. A broken breeding reference, a mistyped work type, or a misspelled
+// pal name (→ dead paldb.cc map link) must never ship. Same check as `npm run validate`; errors abort.
+if (!changelogOnly) {
+  try {
+    execSync("node scripts/validate.mjs", { stdio: "inherit" });
+  } catch {
+    console.error("✗ Data validation failed — aborting release. Fix src/data.js and re-run.");
+    process.exit(1);
+  }
 }
 
 // Load canonical notes from src/notes.js (it assigns window.PP_NOTES).
@@ -54,11 +68,17 @@ if (!NOTES[version]) {
 
 // --- locate gh + get a token (friendly errors instead of a raw throw when logged out) ---
 let GH = "gh";
-try { execSync(`${GH} --version`, { stdio: "ignore" }); }
-catch { GH = `"C:\\Program Files\\GitHub CLI\\gh.exe"`; }
+try {
+  execSync(`${GH} --version`, { stdio: "ignore" });
+} catch {
+  GH = `"C:\\Program Files\\GitHub CLI\\gh.exe"`;
+}
 let token = "";
-try { token = execSync(`${GH} auth token`, { encoding: "utf8" }).trim(); }
-catch { token = ""; }
+try {
+  token = execSync(`${GH} auth token`, { encoding: "utf8" }).trim();
+} catch {
+  token = "";
+}
 if (!token) {
   console.error("✗ Could not get a GitHub token from `gh auth token`. Run `gh auth login` first.");
   process.exit(1);
@@ -71,18 +91,26 @@ try {
   const branch = execSync("git rev-parse --abbrev-ref HEAD", { encoding: "utf8" }).trim();
   const expected = betaApp ? "beta" : "main";
   if (branch !== expected) {
-    console.warn(`⚠ On branch "${branch}" but a ${betaApp ? "beta" : "stable"} release usually ships from "${expected}". Double-check this is intentional.`);
+    console.warn(
+      `⚠ On branch "${branch}" but a ${betaApp ? "beta" : "stable"} release usually ships from "${expected}". Double-check this is intentional.`
+    );
   }
-} catch { /* not a git checkout / git missing — skip */ }
+} catch {
+  /* not a git checkout / git missing — skip */
+}
 
 // Existing-release guard: electron-builder would try to reuse/clobber a release with this tag.
 // If v${version} already exists, the version wasn't bumped (or a prior run half-completed).
 try {
   execSync(`${GH} release view v${version} --repo ${owner}/${repo}`, { stdio: "ignore" });
-  console.error(`✗ A GitHub release for v${version} already exists. Bump the version in package.json, ` +
-    `or delete that release if you're re-running a failed publish.`);
+  console.error(
+    `✗ A GitHub release for v${version} already exists. Bump the version in package.json, ` +
+      `or delete that release if you're re-running a failed publish.`
+  );
   process.exit(1);
-} catch { /* release does not exist → good, proceed */ }
+} catch {
+  /* release does not exist → good, proceed */
+}
 
 // --- build + publish ---
 const productName = betaApp ? "PalPocket Beta" : "PalPocket";
@@ -110,10 +138,17 @@ if (betaApp) {
 }
 console.log(`▶ Building & publishing ${productName} v${version} to ${owner}/${repo} …`);
 try {
-  execSync(`npx electron-builder --win${buildFlag} --publish always`, { stdio: "inherit", env: { ...process.env, GH_TOKEN: token } });
+  execSync(`npx electron-builder --win${buildFlag} --publish always`, {
+    stdio: "inherit",
+    env: { ...process.env, GH_TOKEN: token },
+  });
 } finally {
   // Always remove the temp config, even if the build throws — otherwise it's left in the working tree.
-  if (betaApp) { try { fs.unlinkSync(BETA_CFG); } catch (e) {} }
+  if (betaApp) {
+    try {
+      fs.unlinkSync(BETA_CFG);
+    } catch (e) {}
+  }
 }
 
 // --- set the GitHub release notes from the canonical source ---
@@ -134,7 +169,8 @@ const body =
   `Prefer no install? Use **${portableName}**.\n\n` +
   `> Unsigned build → Windows SmartScreen warns on first run: **More info → Run anyway**.\n\n` +
   `## What's new in v${version}\n` +
-  NOTES[version].map((b) => `- ${b}`).join("\n") + "\n\n" +
+  NOTES[version].map((b) => `- ${b}`).join("\n") +
+  "\n\n" +
   updateLine;
 fs.writeFileSync(".release-notes.tmp", body);
 // Pre-releases are flagged and kept OFF the "latest" pointer so stable friends never get pulled onto a beta.
@@ -151,12 +187,18 @@ for (let attempt = 1; attempt <= 2 && !edited; attempt++) {
     if (attempt === 1) console.warn("⚠ `gh release edit` failed — retrying once…");
   }
 }
-try { fs.unlinkSync(".release-notes.tmp"); } catch (e) {}
+try {
+  fs.unlinkSync(".release-notes.tmp");
+} catch (e) {}
 if (!edited) {
-  console.error(`\n✗ The build published v${version}, but setting its flags/notes failed.\n` +
-    `  The release may be live with default flags${isPrerelease ? " (NOT marked pre-release — stable users could see it!)" : ""}.\n` +
-    `  Fix it manually:\n    ${editCmd.replace("--notes-file .release-notes.tmp", `--notes "See src/notes.js for v${version}"`)}`);
+  console.error(
+    `\n✗ The build published v${version}, but setting its flags/notes failed.\n` +
+      `  The release may be live with default flags${isPrerelease ? " (NOT marked pre-release — stable users could see it!)" : ""}.\n` +
+      `  Fix it manually:\n    ${editCmd.replace("--notes-file .release-notes.tmp", `--notes "See src/notes.js for v${version}"`)}`
+  );
   process.exit(1);
 }
 
-console.log(`\n✓ Published v${version}${isPrerelease ? " (pre-release)" : ""}. Next: commit (incl. CHANGELOG.md) & push, then update the vault.`);
+console.log(
+  `\n✓ Published v${version}${isPrerelease ? " (pre-release)" : ""}. Next: commit (incl. CHANGELOG.md) & push, then update the vault.`
+);
