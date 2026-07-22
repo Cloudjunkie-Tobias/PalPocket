@@ -4,6 +4,11 @@
 // Newest version FIRST. Add a new key here each release (the version number
 // itself comes from package.json — don't duplicate it).
 window.PP_NOTES = {
+  "4.0.0-beta.1": [
+    "👋 New here? A one-time welcome tip now explains how to run PalPocket as an overlay (borderless-windowed + the Ctrl+Alt+N / Ctrl+Alt+C hotkeys).",
+    "♿ Accessibility pass: the tab bar is keyboard-navigable (arrow keys), with clear focus outlines and proper screen-reader roles throughout.",
+    "🧱 Big under-the-hood cleanup: the app's code is now split into focused per-tab modules (was one 1,300-line file) — easier to maintain and contribute to. No visible changes.",
+  ],
   "3.7.0": [
     "🔧 Under the hood: the release pipeline now runs automatic data-integrity checks — a broken breeding reference, a mistyped work type, or a misspelled pal name (which would break a map link) can no longer ship.",
     "🧹 Added code linting (ESLint) + formatting (Prettier) to keep the project clean as it grows. No visible changes — quality groundwork.",

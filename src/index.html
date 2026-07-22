@@ -25,12 +25,37 @@
           <span id="clock" class="clock" title="Your local time"></span>
         </div>
         <div class="tb-btns">
-          <input id="opacity" class="opacity" type="range" min="30" max="100" value="100" title="Opacity" />
-          <button id="settings-btn" class="tb-btn" title="Settings">⚙️</button>
-          <button id="pin" class="tb-btn active" title="Always on top">📌</button>
-          <button id="click-through" class="tb-btn" title="Click-through (Ctrl+Alt+C)">🖱️</button>
-          <button id="min" class="tb-btn" title="Minimize">—</button>
-          <button id="close" class="tb-btn close" title="Close">✕</button>
+          <input
+            id="opacity"
+            class="opacity"
+            type="range"
+            min="30"
+            max="100"
+            value="100"
+            title="Opacity"
+            aria-label="Overlay opacity"
+          />
+          <button id="settings-btn" class="tb-btn" title="Settings" aria-label="Settings">⚙️</button>
+          <button
+            id="pin"
+            class="tb-btn active"
+            title="Always on top"
+            aria-label="Toggle always on top"
+            aria-pressed="true"
+          >
+            📌
+          </button>
+          <button
+            id="click-through"
+            class="tb-btn"
+            title="Click-through (Ctrl+Alt+C)"
+            aria-label="Toggle click-through"
+            aria-pressed="false"
+          >
+            🖱️
+          </button>
+          <button id="min" class="tb-btn" title="Minimize" aria-label="Minimize">—</button>
+          <button id="close" class="tb-btn close" title="Close" aria-label="Close">✕</button>
         </div>
       </header>
 
@@ -45,16 +70,30 @@
         <div id="search-results" class="search-results hidden"></div>
       </div>
 
-      <nav class="tabs">
-        <button class="tab active" data-tab="planner">Planner</button>
-        <button class="tab" data-tab="bylevel">By Level</button>
-        <button class="tab" data-tab="ladders">Ladders</button>
-        <button class="tab" data-tab="mounts">Mounts</button>
-        <button class="tab" data-tab="bosses">Bosses</button>
-        <button class="tab" data-tab="base">Bases</button>
-        <button class="tab" data-tab="breeding">Breeding</button>
-        <button class="tab" data-tab="guide">Guide</button>
-        <button class="tab" data-tab="passives">Passives</button>
+      <nav class="tabs" role="tablist" aria-label="Sections">
+        <button class="tab active" data-tab="planner" role="tab" aria-selected="true" aria-controls="tab-planner">
+          Planner
+        </button>
+        <button class="tab" data-tab="bylevel" role="tab" aria-selected="false" aria-controls="tab-bylevel">
+          By Level
+        </button>
+        <button class="tab" data-tab="ladders" role="tab" aria-selected="false" aria-controls="tab-ladders">
+          Ladders
+        </button>
+        <button class="tab" data-tab="mounts" role="tab" aria-selected="false" aria-controls="tab-mounts">
+          Mounts
+        </button>
+        <button class="tab" data-tab="bosses" role="tab" aria-selected="false" aria-controls="tab-bosses">
+          Bosses
+        </button>
+        <button class="tab" data-tab="base" role="tab" aria-selected="false" aria-controls="tab-base">Bases</button>
+        <button class="tab" data-tab="breeding" role="tab" aria-selected="false" aria-controls="tab-breeding">
+          Breeding
+        </button>
+        <button class="tab" data-tab="guide" role="tab" aria-selected="false" aria-controls="tab-guide">Guide</button>
+        <button class="tab" data-tab="passives" role="tab" aria-selected="false" aria-controls="tab-passives">
+          Passives
+        </button>
       </nav>
 
       <main id="content">
@@ -168,9 +207,9 @@
       </main>
 
       <!-- Settings panel (opened by the ⚙️ title-bar button) -->
-      <div id="settings-modal" class="modal hidden">
+      <div id="settings-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="settings-title">
         <div class="modal-card settings-card">
-          <div class="modal-title">⚙️ Settings</div>
+          <div class="modal-title" id="settings-title">⚙️ Settings</div>
 
           <div class="set-group">
             <label class="set-row"><input id="startup" type="checkbox" /> <span>Launch on Windows startup</span></label>
@@ -233,6 +272,15 @@
     </div>
     <script src="data.js"></script>
     <script src="notes.js"></script>
-    <script src="app.js"></script>
+    <!-- app split into ordered modules (was one src/app.js); load order matters — core first, init last. -->
+    <script src="js/01-core.js"></script>
+    <script src="js/02-planner.js"></script>
+    <script src="js/03-bases.js"></script>
+    <script src="js/04-mounts.js"></script>
+    <script src="js/05-breeding.js"></script>
+    <script src="js/06-modals.js"></script>
+    <script src="js/07-settings.js"></script>
+    <script src="js/08-views.js"></script>
+    <script src="js/09-init.js"></script>
   </body>
 </html>

@@ -1,0 +1,26 @@
+name: CI
+
+# Runs the same quality gates as the release pipeline on every push / PR, so a broken
+# data reference, lint error, or unformatted file is caught on GitHub — not just locally.
+on:
+  push:
+    branches: [main, beta]
+  pull_request:
+    branches: [main, beta]
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Validate game data (src/data.js)
+        run: npm run validate
+      - name: Lint (ESLint)
+        run: npm run lint
+      - name: Check formatting (Prettier)
+        run: npm run format:check
