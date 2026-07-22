@@ -2,6 +2,11 @@
 
 _Generated from `src/notes.js` by `npm run release`. Do not edit by hand._
 
+## v3.7.0
+
+- 🔧 Under the hood: the release pipeline now runs automatic data-integrity checks — a broken breeding reference, a mistyped work type, or a misspelled pal name (which would break a map link) can no longer ship.
+- 🧹 Added code linting (ESLint) + formatting (Prettier) to keep the project clean as it grows. No visible changes — quality groundwork.
+
 ## v3.6.0
 
 - ⌨️ Custom hotkeys! Rebind show/hide and click-through in ⚙️ Settings — click a shortcut and press your combo (Ctrl+Alt+N / Ctrl+Alt+C stay the defaults)
