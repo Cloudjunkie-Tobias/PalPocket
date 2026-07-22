@@ -2,6 +2,15 @@
 
 _Generated from `src/notes.js` by `npm run release`. Do not edit by hand._
 
+## v3.5.0
+
+- ⚙️ New Settings panel — click the gear in the title bar for Windows-startup, the Beta app, hotkeys & more
+- 👁️ Show / hide tabs — hide the tabs you don't use (in Settings); your choice sticks between launches
+- 🥚 Fixed a wrong breeding recipe (Jormuntide) and two pal-name typos (Bastigor, Clovee) that broke map links
+- 💾 Your window position & settings now always save when you close — no more losing a just-moved overlay
+- 🖱️ The overlay always starts clickable now (click-through is a per-session toggle: Ctrl+Alt+C)
+- 🔒 Reliability: only one copy runs at a time, a heads-up if a hotkey's already taken, and tighter update/security handling
+
 ## v3.4.0
 
 - 🏗️ 'How many to build' structure counts now cover every base type (Mining, Breeding, All-in-one — not just Farming)

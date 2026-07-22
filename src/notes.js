@@ -4,11 +4,13 @@
 // Newest version FIRST. Add a new key here each release (the version number
 // itself comes from package.json — don't duplicate it).
 window.PP_NOTES = {
-  "3.5.0-beta.1": [
-    "🥚 Fixed a wrong breeding recipe — Jormuntide now shows a pair that actually hatches it (the old hint gave you a Verdash)",
-    "🗺️ Fixed two pal-name typos (Bastigor, Clovee) that broke their spawn-map links",
-    "💾 Your window position & settings are now always saved when you close — no more losing a just-moved overlay",
-    "🔒 Reliability pass: only one copy runs at a time, a heads-up when a hotkey is already taken, safer opt-out of beta updates, and tighter update/security handling",
+  "3.5.0": [
+    "⚙️ New Settings panel — click the gear in the title bar for Windows-startup, the Beta app, hotkeys & more",
+    "👁️ Show / hide tabs — hide the tabs you don't use (in Settings); your choice sticks between launches",
+    "🥚 Fixed a wrong breeding recipe (Jormuntide) and two pal-name typos (Bastigor, Clovee) that broke map links",
+    "💾 Your window position & settings now always save when you close — no more losing a just-moved overlay",
+    "🖱️ The overlay always starts clickable now (click-through is a per-session toggle: Ctrl+Alt+C)",
+    "🔒 Reliability: only one copy runs at a time, a heads-up if a hotkey's already taken, and tighter update/security handling",
   ],
   "3.4.0": [
     "🏗️ 'How many to build' structure counts now cover every base type (Mining, Breeding, All-in-one — not just Farming)",
