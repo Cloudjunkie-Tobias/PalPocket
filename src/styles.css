@@ -637,6 +637,15 @@ input[type="number"] {
   font-size: 11px;
   color: var(--dim);
 }
+/* Subtle version stamp pinned at the very bottom of the Settings panel. */
+.set-footer {
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  text-align: center;
+  font-size: 11px;
+  color: var(--dim);
+}
 .link-btn {
   background: none;
   border: none;
