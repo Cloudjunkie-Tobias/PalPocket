@@ -2,6 +2,12 @@
 
 _Generated from `src/notes.js` by `npm run release`. Do not edit by hand._
 
+## v4.0.0
+
+- 👋 New here? A one-time welcome tip now explains how to run PalPocket as an overlay (borderless-windowed + the Ctrl+Alt+N / Ctrl+Alt+C hotkeys).
+- ♿ Accessibility pass: the tab bar is keyboard-navigable (arrow keys), with clear focus outlines and proper screen-reader roles throughout.
+- 🧱 Big under-the-hood cleanup: the app's code is now split into focused per-tab modules (was one 1,300-line file) — easier to maintain and contribute to. No visible changes.
+
 ## v3.7.0
 
 - 🔧 Under the hood: the release pipeline now runs automatic data-integrity checks — a broken breeding reference, a mistyped work type, or a misspelled pal name (which would break a map link) can no longer ship.
