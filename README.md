@@ -4,6 +4,17 @@ A compact, always-on-top **Palworld companion** for Windows: worker planning, mo
 
 ![Electron](https://img.shields.io/badge/Electron-31-blue) ![Platform](https://img.shields.io/badge/platform-Windows%20x64-informational) ![License](https://img.shields.io/badge/license-MIT-green)
 
+<!-- SCREENSHOTS — scaffold ready; drop images into docs/screenshots/ then uncomment this block.
+     See docs/screenshots/README.md for the shot list + naming. Keep the overlay-over-Palworld shot first.
+## Screenshots
+
+![PalPocket overlaid on Palworld](docs/screenshots/overlay.png)
+
+| Planner | Bases | Breeding |
+| --- | --- | --- |
+| ![Planner tab](docs/screenshots/planner.png) | ![Bases tab](docs/screenshots/bases.png) | ![Breeding tab](docs/screenshots/breeding.png) |
+-->
+
 ## ⬇️ Download / Install (players)
 
 **→ [Get the latest release](https://github.com/Cloudjunkie-Tobias/PalPocket/releases/latest)** — under **Assets**, download **`PalPocket-Setup-<version>.exe`** and run it.
