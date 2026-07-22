@@ -69,6 +69,7 @@ const state = {
   mountsAvailOnly: false,
   baseType: "",
   baseSlots: {},
+  baseFood: {},
   breedA: "",
   breedB: "",
   passivesFilter: "",
@@ -106,6 +107,29 @@ function saveBaseSlots() {
 }
 function slotsOf(id) {
   return state.baseSlots[id] || DEFAULT_SLOTS;
+}
+
+// ---- persistence (per-base "produce own food" toggle — v4.2) ----
+const LS_FOOD = "palpocket.baseFood";
+// The food-production loop: seed a Berry/Wheat Plantation, water it, harvest into the Feed Box.
+const FOOD_WORKS = ["Planting", "Watering", "Gathering"];
+function loadBaseFood() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(LS_FOOD));
+    const clean = {};
+    if (isPlainObject(raw)) for (const id of Object.keys(raw)) clean[id] = !!raw[id];
+    state.baseFood = clean;
+  } catch (e) {
+    state.baseFood = {};
+  }
+}
+function saveBaseFood() {
+  try {
+    localStorage.setItem(LS_FOOD, JSON.stringify(state.baseFood));
+  } catch (e) {}
+}
+function foodOf(id) {
+  return !!state.baseFood[id];
 }
 
 // ---- persistence (boss checklist survives restarts) ----

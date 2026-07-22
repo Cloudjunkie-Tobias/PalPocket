@@ -146,6 +146,7 @@ function init() {
   const wn = $("whatsnew");
   if (wn) wn.addEventListener("click", () => showWhatsNew("manual"));
   loadBaseSlots();
+  loadBaseFood();
   loadBossDone();
   renderSuitPicker();
   fillBylevelFilter();

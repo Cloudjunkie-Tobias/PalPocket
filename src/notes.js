@@ -4,6 +4,10 @@
 // Newest version FIRST. Add a new key here each release (the version number
 // itself comes from package.json — don't duplicate it).
 window.PP_NOTES = {
+  "4.2.0-beta.1": [
+    "🍖 New per-base 'Produce own food' toggle! Flip it on and the base reserves slots for the food loop (Planting → Watering → Gathering) and recalculates your lineup — the food workers are highlighted, and it shows how many of your slots now feed the base.",
+    "🧮 Smart about it: a base that already grows food (Farming, All-in-one) just says so; a Breeding base only adds what it's missing. Off by default, with a reminder to stock the Feed Box manually.",
+  ],
   "4.1.0": [
     "📍 New 'Where to build' section on each base! Open a base type to see real map spots that suit it — with coordinates, how much flat space they have, enemy level, water, and which resources are nearby.",
     "⛏️ Mining spots highlight multi-resource combos (ore + sulfur / coal / quartz together); 🥚 breeding & farming show the roomiest, flattest, safest ground.",

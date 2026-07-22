@@ -103,6 +103,21 @@ function renderBaseTypeDetail() {
   ctrl.appendChild(range);
   ctrl.appendChild(num);
   out.appendChild(ctrl);
+
+  // Food self-sufficiency toggle (v4.2) — recalculates the lineup to reserve food-loop slots.
+  const foodRow = el("label", "food-toggle");
+  const foodCb = el("input");
+  foodCb.type = "checkbox";
+  foodCb.checked = foodOf(t.id);
+  foodCb.addEventListener("change", () => {
+    state.baseFood[t.id] = foodCb.checked;
+    saveBaseFood();
+    renderBaseBody(body, t, slotsOf(t.id));
+  });
+  foodRow.appendChild(foodCb);
+  foodRow.appendChild(el("span", null, "🍖 Produce own food — reserve slots for a plantation"));
+  out.appendChild(foodRow);
+
   out.appendChild(body);
   renderBaseBody(body, t, slotsOf(t.id));
   renderBuildSpots(out, t);
@@ -147,7 +162,20 @@ function renderBaseBody(body, t, slots) {
   renderRoadmap(body, t, baseLevel);
 
   // Best pals in slot for THIS base's jobs, gated by your character level (catch) — Planner-style.
-  const works = t.works && t.works.length ? (t.works[0] === "*" ? allSuits() : t.works) : [];
+  let works = t.works && t.works.length ? (t.works[0] === "*" ? allSuits() : t.works) : [];
+  // Food self-sufficiency (v4.2): when this base is set to feed itself, fold the food loop
+  // (Planting → Watering → Gathering) into its jobs. slice() so we never mutate DATA.
+  const foodOn = foodOf(t.id);
+  const addedFood = [];
+  if (foodOn && works.length) {
+    works = works.slice();
+    FOOD_WORKS.forEach((w) => {
+      if (!works.includes(w)) {
+        works.push(w);
+        addedFood.push(w);
+      }
+    });
+  }
   if (works.length) {
     body.appendChild(el("div", "group-h", "Best in slot"));
     const raised =
@@ -161,6 +189,20 @@ function renderBaseBody(body, t, slots) {
         `<b>${slots}</b> worker slots (pal beds) ≈ base <b>Lv ${baseLevel}</b>${raised} · best pal per job you can catch at char level <b>${state.level}</b>:`
       )
     );
+    if (foodOn) {
+      const msg = addedFood.length
+        ? `🍖 Food loop added: <b>${esc(addedFood.join(" + "))}</b> — ${addedFood.length} of ${slots} slot(s) now feed the base.`
+        : `🍖 This base already grows its own food (its jobs cover Planting / Watering / Gathering).`;
+      body.appendChild(el("div", "food-note", msg));
+    } else {
+      body.appendChild(
+        el(
+          "div",
+          "food-note off",
+          "⚠️ Not self-feeding — keep the Feed Box stocked manually (or supply it from another base)."
+        )
+      );
+    }
     pickBestForWorks(works).forEach(({ type, pal }) => {
       if (!pal) {
         body.appendChild(
@@ -172,7 +214,9 @@ function renderBaseBody(body, t, slots) {
         );
         return;
       }
-      body.appendChild(palCard(pal, type));
+      const card = palCard(pal, type);
+      if (addedFood.includes(type)) card.classList.add("food-pal");
+      body.appendChild(card);
     });
   }
 
