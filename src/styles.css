@@ -327,3 +327,15 @@ select { background: var(--panel2); color: var(--text); border: 1px solid var(--
 .tab-visibility { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 10px; }
 .tabvis-row { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text); padding: 2px 0; cursor: pointer; }
 .tabvis-row input { accent-color: var(--accent); }
+
+/* ---- Custom hotkeys (Settings) ---- */
+.hotkey-row { display: flex; align-items: center; gap: 8px; padding: 3px 0; font-size: 12px; }
+.hotkey-label { flex: 1; color: var(--text); }
+.hotkey-cap { min-width: 110px; text-align: center; font-size: 11px; color: var(--text); background: var(--panel2); border: 1px solid var(--line); border-radius: 5px; padding: 3px 8px; cursor: pointer; }
+.hotkey-cap:hover { border-color: var(--accent); }
+.hotkey-cap.capturing { color: var(--accent2); border-color: var(--accent); border-style: dashed; }
+.hotkey-reset { background: transparent; color: var(--muted); border: 1px solid var(--line); border-radius: 5px; padding: 3px 7px; cursor: pointer; font-size: 12px; line-height: 1; }
+.hotkey-reset:hover { color: var(--text); border-color: var(--accent); }
+.hotkey-msg { margin-top: 6px; font-size: 11px; color: var(--accent2); }
+.hotkey-msg.bad { color: #e5866a; }
+.hotkey-msg.hidden { display: none; }

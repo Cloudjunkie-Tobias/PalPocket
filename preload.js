@@ -11,6 +11,7 @@ contextBridge.exposeInMainWorld('overlay', {
   getStartup: () => ipcRenderer.invoke('get-startup'),
   setStartup: (v) => ipcRenderer.send('set-startup', v),
   getUiState: () => ipcRenderer.invoke('get-ui-state'),
+  setHotkey: (which, accelerator) => ipcRenderer.invoke('set-hotkey', { which, accelerator }),
   openExternal: (url) => ipcRenderer.send('open-external', url),
   onUpdateReady: (cb) => ipcRenderer.on('update-ready', (_e, version) => cb(version)),
   installUpdate: () => ipcRenderer.send('install-update'),

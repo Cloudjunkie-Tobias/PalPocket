@@ -16,8 +16,10 @@ const IS_BETA_BUILD = app.getName().toLowerCase().includes('beta');
 // ---- persisted overlay/user state (survives restarts) ----
 // One small JSON file in userData holds window bounds + opacity + pin + click-through.
 const STATE_FILE = path.join(app.getPath('userData'), 'overlay-state.json');
-const DEFAULT_STATE = { bounds: null, opacity: 1, pinned: true, clickThrough: false };
+const DEFAULT_HOTKEYS = { show: 'Control+Alt+N', clickThrough: 'Control+Alt+C' };
+const DEFAULT_STATE = { bounds: null, opacity: 1, pinned: true, clickThrough: false, hotkeys: { ...DEFAULT_HOTKEYS } };
 let uiState = { ...DEFAULT_STATE };
+function currentHotkeys() { return { ...DEFAULT_HOTKEYS, ...(uiState.hotkeys || {}) }; }
 
 function loadState() {
   try {
@@ -70,6 +72,18 @@ function detectSiblingPalPocket(cb) {
     // Never let a slow/hung tasklist stall the hint — assume no sibling after 1.5s.
     setTimeout(() => finish(false), 1500);
   } catch (e) { finish(false); }
+}
+
+// (Re)register both global hotkeys from the current (possibly customized) accelerators.
+// Returns which succeeded — register() returns false (or throws on a bad string) when the combo
+// is invalid or already held by another app.
+function registerHotkeys() {
+  globalShortcut.unregisterAll();
+  const hk = currentHotkeys();
+  let show = false, clickThrough = false;
+  try { show = globalShortcut.register(hk.show, toggleShow); } catch (e) { show = false; }
+  try { clickThrough = globalShortcut.register(hk.clickThrough, toggleClickThrough); } catch (e) { clickThrough = false; }
+  return { show, clickThrough };
 }
 
 // Only reuse saved bounds if they still land on a currently-connected display (monitor unplugged / resolution change).
@@ -171,9 +185,9 @@ app.whenReady().then(() => {
   loadState();
   createWindow();
 
-  // globalShortcut.register returns false if another app already holds the accelerator.
-  const okShow = globalShortcut.register('Control+Alt+N', toggleShow);
-  const okClick = globalShortcut.register('Control+Alt+C', toggleClickThrough);
+  // Register the (customizable) global hotkeys. register() returns false if another app holds it.
+  const reg = registerHotkeys();
+  const okShow = reg.show, okClick = reg.clickThrough;
   if (!okShow || !okClick) {
     // The common cause is our OWN sibling (PalPocket ↔ PalPocket Beta) running at the same
     // time — that's expected and harmless, so stay quiet. Only warn when something ELSE grabbed
@@ -208,8 +222,30 @@ app.whenReady().then(() => {
   ipcMain.handle('get-ui-state', () => ({
     opacity: uiState.opacity, pinned: uiState.pinned,
     clickThrough: uiState.clickThrough,
+    hotkeys: currentHotkeys(),
     betaBuild: IS_BETA_BUILD,
   }));
+  // Rebind a global hotkey. Validates, tries to register, and reverts if it fails, so the app
+  // never ends up with a dead shortcut. Returns { ok, accelerator?, error? } to the renderer.
+  ipcMain.handle('set-hotkey', (_e, arg) => {
+    const which = arg && arg.which;
+    const accelerator = arg && arg.accelerator;
+    if (which !== 'show' && which !== 'clickThrough') return { ok: false, error: 'Unknown shortcut.' };
+    if (typeof accelerator !== 'string' || !accelerator) return { ok: false, error: 'Invalid shortcut.' };
+    const hk = currentHotkeys();
+    const other = which === 'show' ? hk.clickThrough : hk.show;
+    if (accelerator === other) return { ok: false, error: 'That combo is already used by the other shortcut.' };
+    const prev = hk[which];
+    hk[which] = accelerator;
+    uiState.hotkeys = hk;
+    if (!registerHotkeys()[which]) {
+      // Failed (in use elsewhere or invalid) — roll back so nothing is left broken.
+      hk[which] = prev; uiState.hotkeys = hk; registerHotkeys();
+      return { ok: false, error: 'That combo is unavailable — another app may already use it.' };
+    }
+    saveState();
+    return { ok: true, accelerator };
+  });
   ipcMain.on('open-external', (_e, url) => {
     if (typeof url !== 'string') return;
     // Whitelist: pal reference pages + this project's own GitHub (for the "Get Beta app" link).

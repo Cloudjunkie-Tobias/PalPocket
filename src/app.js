@@ -938,6 +938,75 @@ function openSettings() { buildTabVisibility(); const m = $("settings-modal"); i
 function closeSettings() { const m = $("settings-modal"); if (m) m.classList.add("hidden"); }
 function settingsOpen() { const m = $("settings-modal"); return m && !m.classList.contains("hidden"); }
 
+// ---- Custom hotkeys ----
+const HK_DEFAULTS = { show: "Control+Alt+N", clickThrough: "Control+Alt+C" };
+let hkCurrent = { ...HK_DEFAULTS };
+let hkCapturing = null; // action being captured, or null
+function fmtAccel(a) {
+  return String(a || "").replace(/CommandOrControl|Control/g, "Ctrl").replace(/Super|Meta/g, "Win").split("+").join(" + ");
+}
+function renderHotkeyButtons() {
+  ["show", "clickThrough"].forEach(a => {
+    const btn = $("hk-" + a);
+    if (btn && hkCapturing !== a) btn.textContent = fmtAccel(hkCurrent[a]);
+  });
+}
+function hotkeyMsg(text, ok) {
+  const m = $("hotkey-msg");
+  if (!m) return;
+  if (!text) { m.classList.add("hidden"); m.textContent = ""; return; }
+  m.textContent = text; m.classList.toggle("bad", !ok); m.classList.remove("hidden");
+}
+// Build an Electron accelerator from a keydown event; null if it isn't a usable combo.
+function accelFromEvent(e) {
+  const mods = [];
+  if (e.ctrlKey) mods.push("Control");
+  if (e.altKey) mods.push("Alt");
+  if (e.shiftKey) mods.push("Shift");
+  if (e.metaKey) mods.push("Super");
+  if (!mods.length) return null; // a global shortcut must have a modifier
+  const c = e.code || ""; let key = null, m;
+  if ((m = c.match(/^Key([A-Z])$/))) key = m[1];
+  else if ((m = c.match(/^Digit(\d)$/))) key = m[1];
+  else if ((m = c.match(/^Numpad(\d)$/))) key = m[1];
+  else if ((m = c.match(/^F(\d{1,2})$/))) key = "F" + m[1];
+  else if (c === "ArrowUp") key = "Up";
+  else if (c === "ArrowDown") key = "Down";
+  else if (c === "ArrowLeft") key = "Left";
+  else if (c === "ArrowRight") key = "Right";
+  else if (c === "Space") key = "Space";
+  else return null;
+  return mods.join("+") + "+" + key;
+}
+async function saveHotkey(action, accel) {
+  if (!(hasOverlay && window.overlay.setHotkey)) { hkCurrent[action] = accel; renderHotkeyButtons(); return; }
+  const res = await window.overlay.setHotkey(action, accel);
+  if (res && res.ok) { hkCurrent[action] = res.accelerator; hotkeyMsg("Saved ✓", true); }
+  else { hotkeyMsg((res && res.error) || "Couldn't set that combo.", false); }
+  renderHotkeyButtons();
+}
+function startHotkeyCapture(action) {
+  if (hkCapturing) return;
+  const btn = $("hk-" + action);
+  if (!btn) return;
+  hkCapturing = action; btn.classList.add("capturing"); btn.textContent = "Press keys…"; hotkeyMsg("");
+  const onKey = (e) => {
+    e.preventDefault(); e.stopPropagation();
+    if (e.key === "Escape") { endHotkeyCapture(onKey); renderHotkeyButtons(); return; }
+    if (["Control", "Alt", "Shift", "Meta"].includes(e.key)) return; // wait for the real key
+    const accel = accelFromEvent(e);
+    if (!accel) { hotkeyMsg("Use Ctrl / Alt / Shift + a letter, number, F-key or arrow.", false); return; }
+    endHotkeyCapture(onKey); saveHotkey(action, accel);
+  };
+  btn._hk = onKey;
+  document.addEventListener("keydown", onKey, true); // capture phase, so Esc doesn't close Settings
+}
+function endHotkeyCapture(onKey) {
+  if (onKey) document.removeEventListener("keydown", onKey, true);
+  if (hkCapturing) { const b = $("hk-" + hkCapturing); if (b) b.classList.remove("capturing"); }
+  hkCapturing = null;
+}
+
 // ---- Quick search ----
 let _searchIndex = null;
 function searchIndex() {
@@ -1204,6 +1273,12 @@ function init() {
   if (getBeta) getBeta.addEventListener("click", () => openExt("https://github.com/Cloudjunkie-Tobias/PalPocket/releases"));
   const feedback = $("feedback-btn");
   if (feedback) feedback.addEventListener("click", () => openExt("https://github.com/Cloudjunkie-Tobias/PalPocket/issues/new/choose"));
+  const fullCl = $("full-changelog");
+  if (fullCl) fullCl.addEventListener("click", () => openExt("https://github.com/Cloudjunkie-Tobias/PalPocket/blob/main/CHANGELOG.md"));
+  // Hotkey rebinding
+  document.querySelectorAll(".hotkey-cap").forEach(b => b.addEventListener("click", () => startHotkeyCapture(b.dataset.action)));
+  document.querySelectorAll(".hotkey-reset").forEach(b => b.addEventListener("click", () => saveHotkey(b.dataset.action, HK_DEFAULTS[b.dataset.action])));
+  renderHotkeyButtons(); // defaults; overwritten by getUiState below when running as the overlay
   loadHiddenTabs();
 
   startClock();
@@ -1262,6 +1337,7 @@ function init() {
         $("pin").classList.toggle("active", pinned);
         ct = !!s.clickThrough;
         $("click-through").classList.toggle("active", ct);
+        if (s.hotkeys) { hkCurrent = { ...HK_DEFAULTS, ...s.hotkeys }; renderHotkeyButtons(); }
         if (s.betaBuild && $("beta-flag")) $("beta-flag").classList.remove("hidden");
         // Beta section in Settings: the dedicated Beta app shows a "you're on beta" note;
         // the normal app shows a link to install the separate Beta app.

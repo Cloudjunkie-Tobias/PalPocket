@@ -180,13 +180,23 @@
           <button id="feedback-btn" class="link-btn">💬 Report a bug / request a feature</button>
         </div>
 
-        <div class="set-group hotkeys">
+        <div class="set-group">
           <div class="set-h">Hotkeys</div>
-          <div><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>N</kbd> show / hide overlay</div>
-          <div><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>C</kbd> toggle click-through</div>
+          <div class="set-sub">Click a shortcut, then press your combo (needs Ctrl / Alt / Shift + a key). Esc cancels.</div>
+          <div class="hotkey-row">
+            <span class="hotkey-label">Show / hide overlay</span>
+            <button class="hotkey-cap" id="hk-show" data-action="show"></button>
+            <button class="hotkey-reset" data-action="show" title="Reset to default">↺</button>
+          </div>
+          <div class="hotkey-row">
+            <span class="hotkey-label">Toggle click-through</span>
+            <button class="hotkey-cap" id="hk-clickThrough" data-action="clickThrough"></button>
+            <button class="hotkey-reset" data-action="clickThrough" title="Reset to default">↺</button>
+          </div>
+          <div id="hotkey-msg" class="hotkey-msg hidden"></div>
         </div>
 
-        <div class="about-row">PalPocket <span id="ver"></span> · <button id="whatsnew" class="link-btn">What's new</button></div>
+        <div class="about-row">PalPocket <span id="ver"></span> · <button id="whatsnew" class="link-btn">What's new</button> · <button id="full-changelog" class="link-btn">Full changelog</button></div>
 
         <div class="modal-actions">
           <button id="settings-close" class="map-btn">Close</button>
