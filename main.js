@@ -26,12 +26,23 @@ function loadState() {
   } catch (e) { uiState = { ...DEFAULT_STATE }; }
 }
 let _saveTimer = null;
+function writeStateNow() {
+  // Atomic write: temp file + rename, so a crash mid-write can't leave torn JSON.
+  try {
+    const tmp = STATE_FILE + '.tmp';
+    fs.writeFileSync(tmp, JSON.stringify(uiState));
+    fs.renameSync(tmp, STATE_FILE);
+  } catch (e) { /* ignore */ }
+}
 function saveState() {
   // debounce — move/resize fire rapidly
   if (_saveTimer) clearTimeout(_saveTimer);
-  _saveTimer = setTimeout(() => {
-    try { fs.writeFileSync(STATE_FILE, JSON.stringify(uiState)); } catch (e) { /* ignore */ }
-  }, 400);
+  _saveTimer = setTimeout(() => { _saveTimer = null; writeStateNow(); }, 400);
+}
+function flushState() {
+  // Synchronous flush for quit paths, so the last <400ms of changes aren't lost.
+  if (_saveTimer) { clearTimeout(_saveTimer); _saveTimer = null; }
+  writeStateNow();
 }
 
 // Only reuse saved bounds if they still land on a currently-connected display (monitor unplugged / resolution change).
@@ -77,9 +88,19 @@ function createWindow() {
   win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
 
   // Persist window geometry as the user moves/resizes it.
-  const rememberBounds = () => { if (win && !win.isMinimized()) { uiState.bounds = win.getBounds(); saveState(); } };
+  // Skip while minimized or maximized so we store the real "normal" geometry, not a maximized rect.
+  const rememberBounds = () => {
+    if (win && !win.isMinimized() && !win.isMaximized()) { uiState.bounds = win.getBounds(); saveState(); }
+  };
   win.on('move', rememberBounds);
   win.on('resize', rememberBounds);
+  win.on('closed', () => { win = null; });
+
+  // Lock the window to the local UI — no navigating to remote URLs, no popups.
+  win.webContents.on('will-navigate', (e, url) => {
+    if (!url.startsWith('file://')) e.preventDefault();
+  });
+  win.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
 
   win.loadFile(path.join(__dirname, 'src', 'index.html'));
 }
@@ -106,15 +127,35 @@ function applyUpdaterChannel() {
   autoUpdater.allowPrerelease = IS_BETA_BUILD || !!uiState.beta;
 }
 
+// Only one copy of THIS app (stable and "PalPocket Beta" have different appIds, so they still coexist).
+// Prevents two instances fighting over overlay-state.json, the updater, and the hotkeys.
+if (!app.requestSingleInstanceLock()) {
+  app.quit();
+} else {
+  app.on('second-instance', () => {
+    if (win) { if (!win.isVisible()) win.show(); win.focus(); }
+  });
+  main();
+}
+
+function main() {
 app.whenReady().then(() => {
   loadState();
   createWindow();
 
-  globalShortcut.register('Control+Alt+N', toggleShow);
-  globalShortcut.register('Control+Alt+C', toggleClickThrough);
+  // globalShortcut.register returns false if another app already holds the accelerator
+  // (e.g. running stable + Beta at once). Tell the renderer so it can hint the user.
+  const okShow = globalShortcut.register('Control+Alt+N', toggleShow);
+  const okClick = globalShortcut.register('Control+Alt+C', toggleClickThrough);
+  if (!okShow || !okClick) {
+    const notify = () => { if (win) win.webContents.send('hotkeys-unavailable', { show: okShow, clickThrough: okClick }); };
+    if (win) win.webContents.on('did-finish-load', notify);
+  }
 
   ipcMain.on('set-opacity', (_e, value) => {
-    const v = Math.max(0.15, Math.min(1, value));
+    const n = Number(value);
+    if (!Number.isFinite(n)) return; // ignore NaN/garbage so we never persist a null opacity
+    const v = Math.max(0.15, Math.min(1, n));
     if (win) win.setOpacity(v);
     uiState.opacity = v; saveState();
   });
@@ -136,11 +177,19 @@ app.whenReady().then(() => {
     betaBuild: IS_BETA_BUILD,
   }));
   ipcMain.on('set-beta', (_e, value) => {
-    uiState.beta = !!value; saveState();
+    const on = !!value;
+    uiState.beta = on; saveState();
     applyUpdaterChannel();
-    // Re-check right away so enabling the channel picks up a waiting prerelease.
     if (autoUpdater && app.isPackaged && !process.env.PORTABLE_EXECUTABLE_DIR) {
-      autoUpdater.checkForUpdates().catch(() => {});
+      if (on) {
+        // Re-check right away so enabling the channel picks up a waiting prerelease.
+        autoUpdater.autoInstallOnAppQuit = true;
+        autoUpdater.checkForUpdates().catch(() => {});
+      } else {
+        // Opting out: don't silently install a prerelease that was already downloaded this session.
+        // Stable channel is re-evaluated cleanly on next launch.
+        autoUpdater.autoInstallOnAppQuit = false;
+      }
     }
   });
   ipcMain.on('open-external', (_e, url) => {
@@ -173,5 +222,7 @@ app.whenReady().then(() => {
   });
 });
 
+app.on('before-quit', () => flushState());
 app.on('will-quit', () => globalShortcut.unregisterAll());
 app.on('window-all-closed', () => app.quit());
+} // end main()

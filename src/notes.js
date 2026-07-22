@@ -4,6 +4,12 @@
 // Newest version FIRST. Add a new key here each release (the version number
 // itself comes from package.json — don't duplicate it).
 window.PP_NOTES = {
+  "3.5.0-beta.1": [
+    "🥚 Fixed a wrong breeding recipe — Jormuntide now shows a pair that actually hatches it (the old hint gave you a Verdash)",
+    "🗺️ Fixed two pal-name typos (Bastigor, Clovee) that broke their spawn-map links",
+    "💾 Your window position & settings are now always saved when you close — no more losing a just-moved overlay",
+    "🔒 Reliability pass: only one copy runs at a time, a heads-up when a hotkey is already taken, safer opt-out of beta updates, and tighter update/security handling",
+  ],
   "3.4.0": [
     "🏗️ 'How many to build' structure counts now cover every base type (Mining, Breeding, All-in-one — not just Farming)",
     "🐄 New Ranch-by-drop view on the Farming base: see every ranch product and which pals make it, at a glance",

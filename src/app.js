@@ -7,11 +7,23 @@ const hasOverlay = typeof window.overlay !== "undefined";
 // Per-version notes live in src/notes.js (window.PP_NOTES). Never hardcode the version here.
 let APP_VERSION = "";
 function releaseNotes() { return window.PP_NOTES || {}; }
+// Newest notes key by semver — never rely on object insertion order (integer-like
+// keys would sort first and misreport the version in the browser/preview fallback).
+function newestNotesVersion() {
+  const parse = (v) => String(v).split(".").map(n => parseInt(n, 10) || 0);
+  return Object.keys(releaseNotes()).sort((a, b) => {
+    const pa = parse(a), pb = parse(b);
+    for (let i = 0; i < Math.max(pa.length, pb.length); i++) {
+      if ((pb[i] || 0) !== (pa[i] || 0)) return (pb[i] || 0) - (pa[i] || 0);
+    }
+    return 0;
+  })[0];
+}
 async function resolveVersion() {
   if (hasOverlay && window.overlay.getVersion) {
     try { APP_VERSION = await window.overlay.getVersion(); } catch (e) { /* fall through */ }
   }
-  if (!APP_VERSION) APP_VERSION = Object.keys(releaseNotes())[0] || "dev"; // preview/browser fallback = newest notes key
+  if (!APP_VERSION) APP_VERSION = newestNotesVersion() || "dev"; // preview/browser fallback = newest notes key
 }
 const WELCOME_NOTES = [
   "Plan base workers by level, mounts, breeding, passives & more",
@@ -43,9 +55,20 @@ const state = {
 // ---- persistence (per-base-type slot counts survive restarts) ----
 const LS_KEY = "palpocket.baseSlots";
 const DEFAULT_SLOTS = 15;
+// A plain object literal — rejects arrays, numbers, null so strict-mode writes never throw.
+function isPlainObject(o) { return o != null && typeof o === "object" && !Array.isArray(o); }
 function loadBaseSlots() {
-  try { state.baseSlots = JSON.parse(localStorage.getItem(LS_KEY)) || {}; }
-  catch (e) { state.baseSlots = {}; }
+  try {
+    const raw = JSON.parse(localStorage.getItem(LS_KEY));
+    const clean = {};
+    if (isPlainObject(raw)) {
+      for (const id of Object.keys(raw)) {
+        const v = parseInt(raw[id], 10);
+        if (Number.isFinite(v)) clean[id] = Math.max(1, Math.min(MAX_SLOTS, v)); // clamp stale values to the cap
+      }
+    }
+    state.baseSlots = clean;
+  } catch (e) { state.baseSlots = {}; }
 }
 function saveBaseSlots() {
   try { localStorage.setItem(LS_KEY, JSON.stringify(state.baseSlots)); } catch (e) {}
@@ -55,8 +78,10 @@ function slotsOf(id) { return state.baseSlots[id] || DEFAULT_SLOTS; }
 // ---- persistence (boss checklist survives restarts) ----
 const LS_BOSS = "palpocket.bossDone";
 function loadBossDone() {
-  try { state.bossDone = JSON.parse(localStorage.getItem(LS_BOSS)) || {}; }
-  catch (e) { state.bossDone = {}; }
+  try {
+    const raw = JSON.parse(localStorage.getItem(LS_BOSS));
+    state.bossDone = isPlainObject(raw) ? raw : {};
+  } catch (e) { state.bossDone = {}; }
 }
 function saveBossDone() {
   try { localStorage.setItem(LS_BOSS, JSON.stringify(state.bossDone)); } catch (e) {}
@@ -342,7 +367,7 @@ function renderBaseTypePicker() {
   if (!types.length) return;
   if (!state.baseType) state.baseType = types[0].id;
   types.forEach(t => {
-    const c = el("div", "chip" + (state.baseType === t.id ? " on" : ""), `${t.icon || ""} ${esc(t.name)}`);
+    const c = el("div", "chip" + (state.baseType === t.id ? " on" : ""), `${esc(t.icon || "")} ${esc(t.name)}`);
     c.onclick = () => { state.baseType = t.id; renderBaseTypePicker(); renderBaseTypeDetail(); };
     box.appendChild(c);
   });
@@ -811,6 +836,26 @@ function showPalDetail(name) {
   document.body.appendChild(overlay);
 }
 
+// ---- Non-blocking warning toast (inline-styled so it never depends on styles.css) ----
+function showHotkeyWarning(msg) {
+  let host = $("pp-toast");
+  if (!host) {
+    host = el("div"); host.id = "pp-toast";
+    host.style.cssText = "position:fixed;left:50%;bottom:14px;transform:translateX(-50%);" +
+      "max-width:88%;z-index:9999;background:#3a2a12;color:#ffd9a0;border:1px solid #7a5a1e;" +
+      "border-radius:8px;padding:8px 12px;font-size:12px;box-shadow:0 4px 14px rgba(0,0,0,.4);" +
+      "display:flex;gap:10px;align-items:center;";
+    document.body.appendChild(host);
+  }
+  host.innerHTML = "";
+  host.appendChild(el("span", null, "⚠️ " + esc(msg)));
+  const x = el("button", null, "Dismiss");
+  x.style.cssText = "background:transparent;color:#ffd9a0;border:1px solid #7a5a1e;border-radius:5px;" +
+    "padding:2px 8px;cursor:pointer;font-size:11px;white-space:nowrap;";
+  x.addEventListener("click", () => host.remove());
+  host.appendChild(x);
+}
+
 // ---- What's New / Welcome popup ----
 function dismissWhatsNew(overlay) {
   try { localStorage.setItem("palpocket.lastSeenVersion", APP_VERSION); } catch (e) {}
@@ -819,6 +864,7 @@ function dismissWhatsNew(overlay) {
 function showWhatsNew(mode) {
   closePalModal();
   const overlay = el("div"); overlay.id = "pal-modal"; overlay.className = "modal";
+  overlay.dataset.whatsnew = "1"; // lets the global Escape handler persist the dismissal
   overlay.addEventListener("click", e => { if (e.target === overlay) dismissWhatsNew(overlay); });
   const card = el("div", "modal-card");
   const welcome = mode === "welcome";
@@ -903,7 +949,7 @@ function renderPassives() {
     const BUILD_LABEL = { battle: "⚔️ Battle", mount: "🏇 Mount", worker: "🔨 Worker" };
     Object.keys(P.bestBuilds).forEach(k => {
       const row = el("div", "build-row");
-      row.innerHTML = `<span class="build-k">${BUILD_LABEL[k] || k}</span>` +
+      row.innerHTML = `<span class="build-k">${esc(BUILD_LABEL[k] || k)}</span>` +
         P.bestBuilds[k].map(p => `<span class="build-p">${esc(p)}</span>`).join("");
       out.appendChild(row);
     });
@@ -937,7 +983,7 @@ function renderGuide() {
   plan.forEach(step => {
     const card = el("div", "guide-step");
     const head = el("div", "guide-head",
-      `<span class="guide-n">${step.icon || step.n}</span>` +
+      `<span class="guide-n">${esc(step.icon || step.n)}</span>` +
       `<span class="guide-title">${esc(step.n)}. ${esc(step.base)}</span>`);
     card.appendChild(head);
     const meta = el("div", "guide-meta");
@@ -1043,7 +1089,8 @@ function setLevel(v) {
   state.level = v;
   $("level").value = v;
   $("level-num").value = v;
-  renderPlanner();
+  // Only re-render panels that are actually visible; the slider fires on every input event.
+  if ($("tab-planner").classList.contains("active")) renderPlanner();
   if ($("tab-bylevel").classList.contains("active")) renderByLevel();
   if ($("tab-mounts").classList.contains("active")) renderMounts();
   if ($("tab-base").classList.contains("active")) renderBaseTypeDetail();
@@ -1064,7 +1111,10 @@ function init() {
   $("level").addEventListener("input", e => setLevel(e.target.value));
   $("level-num").addEventListener("change", e => setLevel(e.target.value));
   $("slots").value = state.slots;
-  $("slots").addEventListener("change", e => { state.slots = Math.max(1, parseInt(e.target.value, 10) || 1); renderPlanner(); });
+  $("slots").addEventListener("change", e => {
+    const v = Math.max(1, Math.min(MAX_SLOTS, parseInt(e.target.value, 10) || 1)); // clamp to the base cap
+    state.slots = v; $("slots").value = v; renderPlanner();
+  });
 
   document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => switchTab(t.dataset.tab)));
   $("bylevel-filter").addEventListener("change", e => { state.bylevelFilter = e.target.value; renderByLevel(); });
@@ -1078,7 +1128,14 @@ function init() {
   $("bosses-hidedone").addEventListener("change", e => { state.bossesHideDone = e.target.checked; renderBosses(); });
   $("search").addEventListener("input", e => runSearch(e.target.value));
   $("search").addEventListener("blur", () => setTimeout(() => { const b = $("search-results"); if (b) b.classList.add("hidden"); }, 150));
-  document.addEventListener("keydown", e => { if (e.key === "Escape") { closePalModal(); const b = $("search-results"); if (b) b.classList.add("hidden"); } });
+  document.addEventListener("keydown", e => {
+    if (e.key !== "Escape") return;
+    // If the open modal is the What's New popup, persist the dismissal so it doesn't reappear next launch.
+    const m = $("pal-modal");
+    if (m && m.dataset.whatsnew === "1") dismissWhatsNew(m);
+    else closePalModal();
+    const b = $("search-results"); if (b) b.classList.add("hidden");
+  });
 
   startClock();
   const wn = $("whatsnew"); if (wn) wn.addEventListener("click", () => showWhatsNew("manual"));
@@ -1113,6 +1170,18 @@ function init() {
     if (window.overlay.getStartup) {
       window.overlay.getStartup().then(v => { $("startup").checked = !!v; });
       $("startup").addEventListener("change", e => window.overlay.setStartup(e.target.checked));
+    }
+    // A global hotkey failed to register — almost always because PalPocket + PalPocket Beta
+    // are running at once and both claim Ctrl+Alt+N/C. Warn instead of failing silently.
+    if (window.overlay.onHotkeysUnavailable) {
+      window.overlay.onHotkeysUnavailable(info => {
+        const dead = [];
+        if (info && info.show === false) dead.push("Ctrl+Alt+N (show/hide)");
+        if (info && info.clickThrough === false) dead.push("Ctrl+Alt+C (click-through)");
+        if (!dead.length) return;
+        showHotkeyWarning("Hotkey unavailable: " + dead.join(" and ") +
+          ". Another app (likely PalPocket Beta) already holds it — close that copy to free it.");
+      });
     }
     // Restore saved UI prefs so the controls match the window we just reopened.
     if (window.overlay.getUiState) {

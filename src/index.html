@@ -3,6 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Lock the renderer to local resources. Scripts are 'self' only (no inline/eval);
+       'unsafe-inline' is scoped to styles because a few width bars use inline style attrs.
+       External links open in the OS browser via the main process, never in-page. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
   <title>PalPocket</title>
   <link rel="stylesheet" href="styles.css" />
 </head>

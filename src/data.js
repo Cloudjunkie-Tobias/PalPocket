@@ -1523,7 +1523,7 @@ window.PAL_DATA = {
     ],
     "Planting": [
       {
-        "name": "Clowve",
+        "name": "Clovee",
         "workLevel": 1,
         "catchLevel": null
       },
@@ -3474,8 +3474,8 @@ window.PAL_DATA = {
       },
       {
         "child": "Jormuntide",
-        "parentA": "Warsect",
-        "parentB": "Braloha",
+        "parentA": "Shadowbeak",
+        "parentB": "Wumpo Botan",
         "why": "Best Watering worker + water mount."
       },
       {
@@ -3876,7 +3876,7 @@ window.PAL_DATA = {
       { "name": "Marcus & Faleris", "faction": "PIDF Tower", "level": 40, "location": "Dessicated Desert", "element": "Fire", "weakness": "Water", "note": "Bring Water pals (Jormuntide, Penking) to hard-counter the Fire phoenix." },
       { "name": "Victor & Shadowbeak", "faction": "PAL Genetic Research Unit", "level": 50, "location": "Astral Mountains (snow region)", "element": "Dark", "weakness": "Dragon", "note": "Dragon pals (Jetragon, Orserk) counter the Dark boss; final base-game tower." },
       { "name": "Saya & Selyne", "faction": "Moonflower Tower", "level": 55, "location": "Sakurajima Island", "element": "Dark", "weakness": "Dragon", "note": "Sakurajima tower. Bring Dragon pals and strong burst — high HP." },
-      { "name": "Bjorn & Bastigar", "faction": "Feybreak Tower", "level": 60, "location": "Feybreak Island", "element": "Ice", "weakness": "Fire", "note": "Feybreak tower. Bastigar is pure Ice — melts to a strong Fire pal with a damage passive." }
+      { "name": "Bjorn & Bastigor", "faction": "Feybreak Tower", "level": 60, "location": "Feybreak Island", "element": "Ice", "weakness": "Fire", "note": "Feybreak tower. Bastigor is pure Ice — melts to a strong Fire pal with a damage passive." }
     ],
     "alphas": [
       { "name": "Nitewing", "level": 15, "location": "Ice Wind Island / Windswept Hills", "element": "Neutral", "weakness": "Dark", "note": "One of the earliest flying mounts; easy to obtain." },

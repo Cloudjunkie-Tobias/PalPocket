@@ -15,4 +15,5 @@ contextBridge.exposeInMainWorld('overlay', {
   openExternal: (url) => ipcRenderer.send('open-external', url),
   onUpdateReady: (cb) => ipcRenderer.on('update-ready', (_e, version) => cb(version)),
   installUpdate: () => ipcRenderer.send('install-update'),
+  onHotkeysUnavailable: (cb) => ipcRenderer.on('hotkeys-unavailable', (_e, info) => cb(info)),
 });
