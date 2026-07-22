@@ -157,7 +157,15 @@
 
         <div class="set-group">
           <label class="set-row"><input id="startup" type="checkbox" /> <span>Launch on Windows startup</span></label>
-          <label class="set-row" title="Receive pre-release (beta) builds before they ship to everyone"><input id="beta-updates" type="checkbox" /> <span>Get beta updates (early/test builds)</span></label>
+        </div>
+
+        <div class="set-group" id="beta-group">
+          <div class="set-h">Beta builds</div>
+          <div id="beta-get" class="hidden">
+            <div class="set-sub">Want features early? Install the separate <b>PalPocket Beta</b> app — it runs alongside this one and updates itself with pre-releases. Your stable app is unaffected.</div>
+            <button id="get-beta" class="link-btn">↗ Get PalPocket Beta (opens GitHub)</button>
+          </div>
+          <div id="beta-current" class="set-sub hidden">🧪 You're running <b>PalPocket Beta</b> — you automatically receive pre-release builds.</div>
         </div>
 
         <div class="set-group">

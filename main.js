@@ -14,9 +14,9 @@ let clickThrough = false;
 const IS_BETA_BUILD = app.getName().toLowerCase().includes('beta');
 
 // ---- persisted overlay/user state (survives restarts) ----
-// One small JSON file in userData holds window bounds + opacity + pin + click-through + the beta-updates flag.
+// One small JSON file in userData holds window bounds + opacity + pin + click-through.
 const STATE_FILE = path.join(app.getPath('userData'), 'overlay-state.json');
-const DEFAULT_STATE = { bounds: null, opacity: 1, pinned: true, clickThrough: false, beta: false };
+const DEFAULT_STATE = { bounds: null, opacity: 1, pinned: true, clickThrough: false };
 let uiState = { ...DEFAULT_STATE };
 
 function loadState() {
@@ -148,12 +148,11 @@ function toggleClickThrough() {
   win.webContents.send('click-through-changed', clickThrough);
 }
 
-// Apply the beta-updates preference to the updater (prereleases only surface on the alpha client).
+// Only the dedicated "PalPocket Beta" app tracks pre-releases. The normal app is stable-only —
+// users who want betas install the separate Beta app (linked from Settings). No in-app toggle.
 function applyUpdaterChannel() {
   if (!autoUpdater) return;
-  // The dedicated Beta app always tracks pre-releases. In the stable app it's opt-in via the settings toggle:
-  // with allowPrerelease on, the GitHub provider picks the newest release INCLUDING prereleases.
-  autoUpdater.allowPrerelease = IS_BETA_BUILD || !!uiState.beta;
+  autoUpdater.allowPrerelease = IS_BETA_BUILD; // beta app → prereleases; normal app → stable only
 }
 
 // Only one copy of THIS app (stable and "PalPocket Beta" have different appIds, so they still coexist).
@@ -208,27 +207,15 @@ app.whenReady().then(() => {
   // Renderer asks for saved UI prefs on load so its controls match the restored window.
   ipcMain.handle('get-ui-state', () => ({
     opacity: uiState.opacity, pinned: uiState.pinned,
-    clickThrough: uiState.clickThrough, beta: uiState.beta,
+    clickThrough: uiState.clickThrough,
     betaBuild: IS_BETA_BUILD,
   }));
-  ipcMain.on('set-beta', (_e, value) => {
-    const on = !!value;
-    uiState.beta = on; saveState();
-    applyUpdaterChannel();
-    if (autoUpdater && app.isPackaged && !process.env.PORTABLE_EXECUTABLE_DIR) {
-      if (on) {
-        // Re-check right away so enabling the channel picks up a waiting prerelease.
-        autoUpdater.autoInstallOnAppQuit = true;
-        autoUpdater.checkForUpdates().catch(() => {});
-      } else {
-        // Opting out: don't silently install a prerelease that was already downloaded this session.
-        // Stable channel is re-evaluated cleanly on next launch.
-        autoUpdater.autoInstallOnAppQuit = false;
-      }
-    }
-  });
   ipcMain.on('open-external', (_e, url) => {
-    if (typeof url === 'string' && /^https:\/\/paldb\.cc\//.test(url)) shell.openExternal(url);
+    if (typeof url !== 'string') return;
+    // Whitelist: pal reference pages + this project's own GitHub (for the "Get Beta app" link).
+    const ok = /^https:\/\/paldb\.cc\//.test(url) ||
+               /^https:\/\/github\.com\/Cloudjunkie-Tobias\/PalPocket(\/|$)/.test(url);
+    if (ok) shell.openExternal(url);
   });
   ipcMain.on('close-app', () => app.quit());
   ipcMain.on('minimize-app', () => win && win.minimize());

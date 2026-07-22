@@ -1196,6 +1196,12 @@ function init() {
   const setClose = $("settings-close"); if (setClose) setClose.addEventListener("click", closeSettings);
   const setModal = $("settings-modal");
   if (setModal) setModal.addEventListener("click", e => { if (e.target === setModal) closeSettings(); });
+  const getBeta = $("get-beta");
+  if (getBeta) getBeta.addEventListener("click", () => {
+    const url = "https://github.com/Cloudjunkie-Tobias/PalPocket/releases";
+    if (hasOverlay && window.overlay.openExternal) window.overlay.openExternal(url);
+    else window.open(url, "_blank", "noopener");
+  });
   loadHiddenTabs();
 
   startClock();
@@ -1255,21 +1261,11 @@ function init() {
         ct = !!s.clickThrough;
         $("click-through").classList.toggle("active", ct);
         if (s.betaBuild && $("beta-flag")) $("beta-flag").classList.remove("hidden");
-        if ($("beta-updates")) {
-          if (s.betaBuild) {
-            // This IS the dedicated Beta app — always on the pre-release stream; lock the control.
-            $("beta-updates").checked = true;
-            $("beta-updates").disabled = true;
-            const lbl = $("beta-updates").parentElement;
-            if (lbl) lbl.title = "This is the Beta app — it always receives pre-release builds";
-          } else {
-            $("beta-updates").checked = !!s.beta;
-          }
-        }
+        // Beta section in Settings: the dedicated Beta app shows a "you're on beta" note;
+        // the normal app shows a link to install the separate Beta app.
+        if (s.betaBuild) { const c = $("beta-current"); if (c) c.classList.remove("hidden"); }
+        else { const g = $("beta-get"); if (g) g.classList.remove("hidden"); }
       });
-    }
-    if (window.overlay.setBeta && $("beta-updates")) {
-      $("beta-updates").addEventListener("change", e => { if (!e.target.disabled) window.overlay.setBeta(e.target.checked); });
     }
   } else {
     $("close").addEventListener("click", () => window.close());
