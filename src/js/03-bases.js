@@ -105,6 +105,39 @@ function renderBaseTypeDetail() {
   out.appendChild(ctrl);
   out.appendChild(body);
   renderBaseBody(body, t, slotsOf(t.id));
+  renderBuildSpots(out, t);
+}
+
+// "Where to build" (v4.1): real map spots that suit THIS base type, from DATA.baseLocations.
+// Verified (game8) spots first, roomiest first; community-reported spots get a "verify in-game" flag.
+function renderBuildSpots(container, t) {
+  const spots = (DATA.baseLocations || []).filter((l) => (l.goodFor || []).includes(t.id));
+  if (!spots.length) return;
+  const spaceRank = (x) => (x === "large-flat" ? 0 : x === "medium" ? 1 : x === "tight" ? 2 : 9);
+  spots.sort((a, b) => b.verified - a.verified || spaceRank(a.space) - spaceRank(b.space));
+
+  const spaceLabel = { "large-flat": "🟩 large / flat", medium: "🟨 medium", tight: "🟥 tight" };
+  const fold = el("details", "fold buildspots");
+  fold.appendChild(el("summary", null, `📍 Where to build (${spots.length})`));
+  const list = el("div", "spot-list");
+  spots.forEach((s) => {
+    const card = el("div", "spot" + (s.verified ? "" : " unverified"));
+    const head = el("div", "spot-head");
+    head.appendChild(el("span", "spot-name", esc(s.name)));
+    head.appendChild(el("span", "spot-coords", "📌 " + esc(s.coords)));
+    card.appendChild(head);
+    const badges = el("div", "spot-badges");
+    if (s.space) badges.appendChild(el("span", "spot-badge", spaceLabel[s.space] || esc(s.space)));
+    if (s.level && s.level !== "?") badges.appendChild(el("span", "spot-badge", "⚔️ lvl " + esc(s.level)));
+    if (s.water) badges.appendChild(el("span", "spot-badge", "💧 water"));
+    (s.resources || []).forEach((r) => badges.appendChild(el("span", "spot-badge res", esc(r))));
+    if (!s.verified) badges.appendChild(el("span", "spot-badge warn", "⚠️ verify in-game"));
+    card.appendChild(badges);
+    if (s.note) card.appendChild(el("div", "spot-note", esc(s.note)));
+    list.appendChild(card);
+  });
+  fold.appendChild(list);
+  container.appendChild(fold);
 }
 
 // Everything that depends on the slot count, re-rendered together.

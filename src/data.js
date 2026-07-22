@@ -3,6 +3,24 @@
 // techLevels = Technology-tree unlock (character level); ancient = also needs Ancient Technology Points.
 // Work suitabilities verified against paldb.cc for 1.0/Feybreak (scale now goes to 8). ranchDrop = ranch production. nightOnly = night-only wild spawns.
 window.PAL_DATA = {
+  // Where-to-build suggestions (v4.1). Global list; each spot is tagged with the base types it
+  // suits (goodFor) so a base's detail view shows only relevant spots. coords = in-game map (x, y).
+  // space: large-flat | medium | tight. verified:false = community-reported (coords vary) → shown
+  // with a "verify in-game" flag. game8-sourced spots are verified:true.
+  "baseLocations": [
+    { "name": "Sakurajima Oil Fields", "coords": "-646, 270", "space": "large-flat", "level": "40+", "water": false, "resources": ["Oil", "Coal", "Sulfur"], "goodFor": ["allinone", "breeding", "mining"], "verified": true, "note": "Game8's overall best base — a big flat footprint for a mega-base or breeding farm; late-game crude oil." },
+    { "name": "Hill of Beginnings (South)", "coords": "264, -548", "space": "large-flat", "level": "1-3", "water": false, "resources": [], "goodFor": ["breeding", "farming", "allinone"], "verified": true, "note": "Best starter spot — large, flat and very safe (enemy lvl 1-3). Great first breeding or farming base." },
+    { "name": "South of Cinnamoth Forest", "coords": "-77, -310", "space": "large-flat", "level": "16-25", "water": false, "resources": ["Ore", "Sulfur"], "goodFor": ["mining", "allinone"], "verified": true, "note": "Wide open, mid-game — ore + sulfur together, wood nearby." },
+    { "name": "Sealed Realm of the Guardian", "coords": "180, -39", "space": "medium", "level": "20-35", "water": false, "resources": ["Coal", "Ore"], "goodFor": ["mining"], "verified": true, "note": "Dense coal + ore in one spot; medium, slightly sloped terrain between fast-travel points." },
+    { "name": "Mount Obsidian West", "coords": "-744, -442", "space": "tight", "level": "25-36", "water": false, "resources": ["Sulfur"], "goodFor": ["mining"], "verified": true, "note": "Seven+ sulfur nodes clustered; tight building space around lava. Late-game ammo runs." },
+    { "name": "West of Scorched Hill", "coords": "-1340, -1285", "space": "medium", "level": "40+", "water": true, "resources": ["Quartz", "Oil"], "goodFor": ["mining", "allinone"], "verified": true, "note": "Hexolite quartz plus a crude-oil spot; spacious and near water. Late-game tech materials." },
+    { "name": "Crystalline Archipelago (North)", "coords": "-356, -1422", "space": "large-flat", "level": "40+", "water": true, "resources": [], "goodFor": ["allinone", "breeding"], "verified": true, "note": "Huge open sky-island area with a circular layout; hardwood + soralite nearby. Late-game stronghold." },
+    { "name": "Open field north of the dunes", "coords": "-198, -702", "space": "large-flat", "level": "?", "water": false, "resources": [], "goodFor": ["breeding", "allinone"], "verified": false, "note": "Community-reported: one of the largest uninterrupted flat areas in the game — room for several breeding farms side by side." },
+    { "name": "Twilight Dunes", "coords": "-90, -120", "space": "large-flat", "level": "?", "water": false, "resources": [], "goodFor": ["breeding"], "verified": false, "note": "Community-reported: perfectly level ground; fits 3-4 breeding farms without obstruction errors." },
+    { "name": "Sea Breeze Archipelago", "coords": "-350, -300", "space": "large-flat", "level": "?", "water": true, "resources": [], "goodFor": ["breeding", "farming"], "verified": false, "note": "Community-reported: big level clearings for breeding farms; water nearby." },
+    { "name": "Basic Ores one-stop", "coords": "290, -100", "space": "medium", "level": "?", "water": false, "resources": ["Ore", "Sulfur", "Quartz"], "goodFor": ["mining"], "verified": false, "note": "Community-reported: ore + a little sulfur & quartz together (the triple combo). Coordinates vary between sources." },
+    { "name": "Plantation soil flats", "coords": "350, 150", "space": "medium", "level": "?", "water": false, "resources": [], "goodFor": ["farming"], "verified": false, "note": "Community-reported: good soil zone for a dedicated wheat / berry / ranch farming base." }
+  ],
   "pals": [
     {
       "name": "Foxparks",

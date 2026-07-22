@@ -35,6 +35,9 @@ const WORK_TYPES = new Set([
 ]);
 const MOUNT_CATEGORIES = new Set(["Ground", "Flying", "Water"]);
 const MAX_SUITABILITY = 8; // 1.0 / Feybreak scale
+// Mineable base-resource node types (baseLocations). A value outside this is a typo.
+const RESOURCE_TYPES = new Set(["Ore", "Coal", "Sulfur", "Quartz", "Oil", "Stone"]);
+const SPACE_KINDS = new Set(["large-flat", "medium", "tight"]);
 
 const errors = [];
 const warnings = [];
@@ -144,6 +147,28 @@ else {
       const okString = isNonEmptyStr(s);
       const okObject = s && typeof s === "object" && isNonEmptyStr(s.item);
       if (!okString && !okObject) err(w, `malformed structure entry ${JSON.stringify(s)}`);
+    }
+  }
+}
+
+// ---- baseLocations (v4.1: "where to build" spots) ----
+if ("baseLocations" in DATA) {
+  const typeIds = new Set((DATA.baseTypes || []).map((t) => t && t.id).filter(Boolean));
+  if (!Array.isArray(DATA.baseLocations)) err("baseLocations", "must be an array");
+  else {
+    for (const l of DATA.baseLocations) {
+      const w = `baseLocations["${l && l.name ? l.name : "<unnamed>"}"]`;
+      if (!isNonEmptyStr(l.name)) err(w, "missing name");
+      if (!isNonEmptyStr(l.coords)) err(w, "missing coords");
+      if (l.space !== undefined && !SPACE_KINDS.has(l.space))
+        err(w, `invalid space ${JSON.stringify(l.space)} (large-flat|medium|tight)`);
+      if (typeof l.verified !== "boolean") err(w, "verified must be true/false");
+      if (!Array.isArray(l.goodFor) || l.goodFor.length === 0)
+        err(w, "goodFor must be a non-empty array of base-type ids");
+      else
+        for (const g of l.goodFor)
+          if (!typeIds.has(g)) err(w, `goodFor references unknown base type ${JSON.stringify(g)}`);
+      for (const r of l.resources || []) if (!RESOURCE_TYPES.has(r)) err(w, `unknown resource ${JSON.stringify(r)}`);
     }
   }
 }

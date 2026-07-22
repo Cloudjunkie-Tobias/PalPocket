@@ -4,6 +4,11 @@
 // Newest version FIRST. Add a new key here each release (the version number
 // itself comes from package.json — don't duplicate it).
 window.PP_NOTES = {
+  "4.1.0-beta.1": [
+    "📍 New 'Where to build' section on each base! Open a base type to see real map spots that suit it — with coordinates, how much flat space they have, enemy level, water, and which resources are nearby.",
+    "⛏️ Mining spots highlight multi-resource combos (ore + sulfur / coal / quartz together); 🥚 breeding & farming show the roomiest, flattest, safest ground.",
+    "⚠️ Community-reported spots are clearly flagged 'verify in-game' so you know which coordinates are confirmed vs crowd-sourced.",
+  ],
   "4.0.1": [
     "🖱️ Click-through is now obvious: when it's on, the overlay shows a highlighted border + a reminder that Ctrl+Alt+C turns it back off — no more 'is it frozen?' moments.",
     "📑 The tab bar is now a single scrollable row instead of wrapping onto two — more room for the actual content.",
